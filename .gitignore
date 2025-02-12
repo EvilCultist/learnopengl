@@ -10,6 +10,7 @@
 .idea
 build/
 .cache
+.clang-format
 
 
 

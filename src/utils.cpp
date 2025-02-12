@@ -5,6 +5,29 @@
 #include <chrono>
 #include <cstddef>
 #include <fstream>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/vector_float4.hpp>
+
+// glm::vec3 loc;
+// glm::vec3 dir;
+// glm::vec3 up;
+Camera::Camera(glm::vec3 location, glm::vec3 direction,
+               glm::vec3 up_direction) {
+  loc = location;
+  dir = direction;
+  up = up_direction;
+}
+void Camera::translate(glm::vec3 how_much) { //
+  loc += how_much;
+}
+void Camera::rotate(glm::vec3 axis, float deg) { //
+  glm::mat4 rotation = glm::mat4(1.0f);
+  rotation = glm::rotate(rotation, glm::radians(deg), axis);
+  dir = rotation * glm::vec4(dir, 1.0f);
+  up = rotation * glm::vec4(up, 1.0f);
+};
+
+glm::mat4 Camera::getView() { return glm::lookAt(loc, loc + dir, up); }
 
 utils::Timer::Timer() {
   auto start = std::chrono::high_resolution_clock::now();
