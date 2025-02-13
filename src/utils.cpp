@@ -7,115 +7,116 @@
 #include <fstream>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/vector_float4.hpp>
+#include <glm/geometric.hpp>
 
 // glm::vec3 loc;
 // glm::vec3 dir;
 // glm::vec3 up;
-Camera::Camera(glm::vec3 location, glm::vec3 direction,
-               glm::vec3 up_direction) {
-  loc = location;
-  dir = direction;
-  up = up_direction;
+Camera::Camera(glm::vec3 location, glm::vec3 up_direction) {
+    loc = location;
+    dir = glm::normalize(-location);
+    up = glm::normalize(up_direction);
 }
 void Camera::translate(glm::vec3 how_much) { //
-  loc += how_much;
+    loc += how_much;
 }
 void Camera::rotate(glm::vec3 axis, float deg) { //
-  glm::mat4 rotation = glm::mat4(1.0f);
-  rotation = glm::rotate(rotation, glm::radians(deg), axis);
-  dir = rotation * glm::vec4(dir, 1.0f);
-  up = rotation * glm::vec4(up, 1.0f);
+    glm::mat4 rotation = glm::mat4(1.0f);
+    rotation = glm::rotate(rotation, glm::radians(deg), axis);
+    // dir = glm::normalize(rotation * glm::vec4(dir, 1.0f));
+    dir = glm::normalize(rotation * glm::vec4(dir, 1.0f));
+    // up = glm::normalize(rotation * glm::vec4(up, 1.0f));
 };
 
 glm::mat4 Camera::getView() { return glm::lookAt(loc, loc + dir, up); }
 
 utils::Timer::Timer() {
-  auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
 }
 // has some issue, returns a constant
 float utils::Timer::now() {
-  auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::duration<float>>(end - start)
-      .count();
+    auto end = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration_cast<std::chrono::duration<float>>(end - start)
+        .count();
 }
 
 void utils::glfwHints() {
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 }
 
 // const char* readFile(const std::string& filePath) {
-std::string utils::readFile(const std::string &filePath) {
+std::string utils::readFile(const std::string& filePath) {
 
-  std::ifstream file(filePath);
+    std::ifstream file(filePath);
 
-  if (!file.is_open()) {
-    std::cout << "Error: Could not open file at " << filePath << std::endl;
-    return "";
-  }
+    if (!file.is_open()) {
+        std::cout << "Error: Could not open file at " << filePath << std::endl;
+        return "";
+    }
 
-  std::string temp = "";
-  std::string buffer = "";
-  while (getline(file, temp))
-    buffer += temp + '\n';
-  // while (getline(vertex_s, temp))
-  //     vertexSource += temp + '\n';
-  file.close();
-  // std::cout << buffer << std::endl;
+    std::string temp = "";
+    std::string buffer = "";
+    while (getline(file, temp))
+        buffer += temp + '\n';
+    // while (getline(vertex_s, temp))
+    //     vertexSource += temp + '\n';
+    file.close();
+    // std::cout << buffer << std::endl;
 
-  return buffer;
+    return buffer;
 }
 
 void utils::getImage(std::string filePath, GLenum tex, GLint loc) {
-  glActiveTexture(tex);
-  glBindTexture(GL_TEXTURE_2D, loc);
-  int width, height;
-  unsigned char *image =
-      SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-               GL_UNSIGNED_BYTE, image);
-  // settings functions
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  GLfloat textureBackground[] = {1.0f, 1.0f, 1.0f, 1.0f};
-  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, textureBackground);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  // import texture before this
-  glGenerateMipmap(GL_TEXTURE_2D);
-  SOIL_free_image_data(image);
+    glActiveTexture(tex);
+    glBindTexture(GL_TEXTURE_2D, loc);
+    int width, height;
+    unsigned char* image =
+        SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                 GL_UNSIGNED_BYTE, image);
+    // settings functions
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    GLfloat textureBackground[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, textureBackground);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // import texture before this
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
 }
 
 int checkIfShaderDidOk(GLuint shader) {
-  GLint status;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-  if (status != GL_TRUE) {
-    char buffer[512];
-    glGetShaderInfoLog(shader, 512, NULL, buffer);
-    std::cout << buffer << std::endl;
-    std::cerr << "vertex shader failed to compile" << std::endl;
-    return -1;
-  }
-  return 0;
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    if (status != GL_TRUE) {
+        char buffer[512];
+        glGetShaderInfoLog(shader, 512, NULL, buffer);
+        std::cout << buffer << std::endl;
+        std::cerr << "vertex shader failed to compile" << std::endl;
+        return -1;
+    }
+    return 0;
 }
 
 GLint utils::makeShader(std::string path, GLenum type) {
-  std::string sourceString = utils::readFile(path);
-  const char *source = sourceString.c_str();
-  GLuint shader = glCreateShader(type);
-  glShaderSource(shader, 1, &source, NULL);
-  glCompileShader(shader);
-  if (checkIfShaderDidOk(shader) == 0) {
-    return shader;
-  }
-  return -1;
+    std::string sourceString = utils::readFile(path);
+    const char* source = sourceString.c_str();
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, 1, &source, NULL);
+    glCompileShader(shader);
+    if (checkIfShaderDidOk(shader) == 0) {
+        return shader;
+    }
+    return -1;
 }
 
 // void utils::removeImage(unsigned char *image) {}

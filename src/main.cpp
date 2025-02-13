@@ -1,8 +1,10 @@
 #include <GL/glew.h>
 #include <chrono>
 #include <cstdlib>
+#include <cwchar>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
@@ -25,6 +27,16 @@
 #define N_BOXES 8
 
 void renderCube() { ; }
+
+float fov = 45.0f;
+
+void updateScroll(GLFWwindow* window, double delx, double dely) {
+    fov += dely;
+    if (fov > 80)
+        fov = 80;
+    if (fov < 1)
+        fov = 1;
+}
 
 int main() {
     auto t_start = std::chrono::system_clock::now();
@@ -201,10 +213,17 @@ int main() {
     //     glm::vec3(0.0f, 0.0f, 1.0f)    //
     // );
 
-    auto view = Camera(                 //
-        glm::vec3(15.2f, 15.2f, 2.0f),  //
-        glm::vec3(-1.5f, -1.5f, -0.2f), //
-        glm::vec3(0.0f, 0.0f, 1.0f)     //
+    // auto original_location_vector = glm::vec3(15.2f, 15.2f, 2.0f);
+    // auto default_up_vector = glm::vec3(0.0f, 0.0f, 1.0f);
+    // auto view = Camera(           //
+    //     original_location_vector, //
+    //                               // glm::vec3(-1.5f, -1.5f, -0.2f), //
+    //     glm::dot(original_location_vector, default_up_vector) -
+    //         default_up_vector //
+    // );
+    auto view = Camera(                //
+        glm::vec3(15.2f, 15.2f, 2.0f), //
+        glm::vec3(0.0f, 0.0f, 1.0f)    //
     );
 
     GLint uniView = glGetUniformLocation(shaderProgram, "view");
@@ -250,7 +269,9 @@ int main() {
     }
 
     double prevx = 0, prevy = 0;
+    glfwGetCursorPos(window, &prevx, &prevy);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -298,10 +319,10 @@ int main() {
         glClear(GL_STENCIL_BUFFER_BIT);
 
         glm::mat4 model = glm::mat4(1.0f);
-        model =
-            glm::rotate(model,                       // model,
-                        glm::radians(360.0f) * time, // * glm::radians(0.1f), //
-                        glm::vec3(0.0f, 0.0f, 1.0f));
+        // model =
+        //     glm::rotate(model,                       // model,
+        //                 glm::radians(360.0f) * time, // * glm::radians(0.1f),
+        //                 // glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -348,33 +369,67 @@ int main() {
         y = prevy - y;
         prevx -= x;
         prevy -= y;
-        x = (((int)(x)) % 36000);
-        y = (((int)(y)) % 36000);
-        view.rotate(glm::cross(view.dir, view.up), y);
-        view.rotate(view.up, x);
-        // std::cout << x << y << std::endl;
+        // x = (((int)(x)) % 36000);
+        // y = (((int)(y)) % 36000);
+        auto mouse_move = glm::vec2(x, y);
+        auto right_axis = glm::cross(
+            view.dir,
+            view.up - view.dir * glm::length(glm::dot(view.dir, view.up)));
+        if (glm::length(mouse_move) != 0) {
+            mouse_move = glm::normalize(mouse_move);
+            view.rotate(view.up, mouse_move.x * t_diff * 2000);
+            view.rotate(right_axis, mouse_move.y * t_diff * 2000);
+        }
+        // std::cout << right_axis.x << right_axis.y << right_axis.z <<
+        // std::endl; std::cout << x << y << std::endl; std::cout << "time diff
+        // - " << t_diff * 1000 << std::endl; std::cout << "mm - " <<
+        // mouse_move.x << ' ' << mouse_move.y
+        //           << std::endl;
+        // if (glm::dot(view.up, view.dir) > 0.02) {
+        //     std::cerr << "up and forward are not perpendicular" << std::endl;
+        //     std::cerr << glm::dot(view.up, view.dir) << std::endl;
+        // }
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
+            continue;
         }
-        const float speed = 0.1;
+        const float speed = 0.03;
+        glm::vec3 moveDir = glm::vec3(0.0f);
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
             glfwGetKey(window, GLFW_KEY_UP)) {
-            view.translate(view.dir * speed);
+            // view.translate(view.dir * speed);
+            moveDir += view.dir;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS ||
             glfwGetKey(window, GLFW_KEY_DOWN)) {
-            view.translate(view.dir * speed * -1.0f);
+            // view.translate(view.dir * speed * -1.0f);
+            moveDir += -view.dir;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ||
             glfwGetKey(window, GLFW_KEY_RIGHT)) {
-            view.translate(cross(view.dir, view.up) * speed);
+            // view.translate(cross(view.dir, view.up) * speed);
+            moveDir += glm::cross(view.dir, view.up);
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
             glfwGetKey(window, GLFW_KEY_LEFT)) {
-            view.translate(cross(view.dir, view.up) * speed * -1.0f);
+            // view.translate(cross(view.dir, view.up) * speed * -1.0f);
+            moveDir += -glm::cross(view.dir, view.up);
         }
+        if (glm::length(moveDir) != 0) {
+            view.translate(glm::normalize(moveDir) * speed);
+        }
+        glfwSetScrollCallback(window, updateScroll);
+        glm::mat4 proj =
+            glm::perspective(glm::radians(fov),                     //
+                             (1.0f * WINDOW_WIDTH) / WINDOW_HEIGHT, //
+                             1.0f,                                  //
+                             200.0f);
+        glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
     }
+    // std::cout << view.dir.x << view.dir.y << view.dir.z << std::endl;
+    // std::cout << view.up.x << view.up.y << view.up.z << std::endl;
+    // std::cout << view.loc.x << view.loc.y << view.loc.z << std::endl;
 
     glDeleteTextures(3, tex);
 
