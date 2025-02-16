@@ -18,6 +18,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <renderer.h>
 #include <utils.h>
 
 // #define WINDOW_HEIGHT 1200
@@ -25,8 +26,6 @@
 // #define WINDOW_WIDTH 2200
 #define WINDOW_WIDTH 1200
 #define N_BOXES 8
-
-void renderCube() { ; }
 
 float fov = 45.0f;
 
@@ -56,20 +55,6 @@ int main() {
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
         return -1;
-
-    // GLfloat vertices[] = {
-    //     //  Position         Color             Texcoords
-    //     0.5f,  -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // 0 -
-    //     Bottom-right -0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f, // 1
-    //     - Bottom-left 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 2
-    //     - Top-right -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // 3 -
-    //     Top-left 0.5f,  -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // 4 -
-    //     Bottom-right -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // 5
-    //     - Bottom-left 0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // 6
-    //     - Top-right -0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // 7 -
-    //     Top-left 0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f  // 6 -
-    //     Top-right
-    // };
 
     GLfloat vertices[] = {
         -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f, // yeah no
@@ -131,29 +116,40 @@ int main() {
     //     2, 3, 6, 3, 6, 7, // right rd-green
     // };
 
-    GLuint texColorBuffer;
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    // GLuint texColorBuffer;
+    // glGenTextures(1, &texColorBuffer);
+    // glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
+    //              GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    GLuint rboDepthStencil;
-    glGenRenderbuffers(1, &rboDepthStencil);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WINDOW_WIDTH,
-                          WINDOW_HEIGHT);
+    // GLuint rboDepthStencil;
+    // glGenRenderbuffers(1, &rboDepthStencil);
+    // glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+    // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WINDOW_WIDTH,
+    //                       WINDOW_HEIGHT);
+    Renderer rdr;
+    for (int i = 0; i < 42 * 8; i += 8)
+        rdr.addPoint(&vertices[i]);
+    rdr.setPoints();
 
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    for (int i = 0; i < 42 * 8; i += 3) {
+        GLuint element_arr_temp[] = {(GLuint)i, (GLuint)i + 1, (GLuint)i + 2};
+        rdr.addRenderElement(&element_arr_temp[0]);
+    }
+    rdr.setElements();
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // GLuint vao;
+    // glGenVertexArrays(1, &vao);
+    // glBindVertexArray(vao);
+
+    // GLuint vbo;
+    // glGenBuffers(1, &vbo);
+    // glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+    // GL_STATIC_DRAW);
 
     // GLuint ebo;
     // glGenBuffers(1, &ebo);
@@ -166,28 +162,33 @@ int main() {
     auto fragmentShader =
         utils::makeShader("src/shaders/triangle.frag", GL_FRAGMENT_SHADER);
 
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
+    rdr.bindShaders(vertexShader, fragmentShader);
 
-    glBindFragDataLocation(shaderProgram, 0, "outColor");
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
+    // GLuint shaderProgram = glCreateProgram();
+    // glAttachShader(shaderProgram, vertexShader);
+    // glAttachShader(shaderProgram, fragmentShader);
 
-    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          0);
+    // glBindFragDataLocation(shaderProgram, 0, "outColor");
+    // glLinkProgram(shaderProgram);
+    // glUseProgram(shaderProgram);
 
-    GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(3 * sizeof(float)));
+    // GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    // glEnableVertexAttribArray(posAttrib);
+    // glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 *
+    // sizeof(float),
+    //                       0);
 
-    GLint texAttrib = glGetAttribLocation(shaderProgram, "texCord");
-    glEnableVertexAttribArray(texAttrib);
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(6 * sizeof(float)));
+    // GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+    // glEnableVertexAttribArray(colAttrib);
+    // glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 *
+    // sizeof(float),
+    //                       (void*)(3 * sizeof(float)));
+
+    // GLint texAttrib = glGetAttribLocation(shaderProgram, "texCord");
+    // glEnableVertexAttribArray(texAttrib);
+    // glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 *
+    // sizeof(float),
+    //                       (void*)(6 * sizeof(float)));
 
     // GLuint tex;
     // glGenTextures(1, &tex);
@@ -200,11 +201,11 @@ int main() {
     utils::getImage("res/mask.png", GL_TEXTURE1, tex[1]);
     utils::getImage("res/glass.png", GL_TEXTURE2, tex[2]);
 
-    glUniform1i(glGetUniformLocation(shaderProgram, "texMask"), 1);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texGlass"), 2);
+    glUniform1i(glGetUniformLocation(rdr.shaderProgram, "texMask"), 1);
+    glUniform1i(glGetUniformLocation(rdr.shaderProgram, "texGlass"), 2);
 
     glm::mat4 model = glm::mat4(0.5f);
-    GLint uniModel = glGetUniformLocation(shaderProgram, "model");
+    GLint uniModel = glGetUniformLocation(rdr.shaderProgram, "model");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
     // glm::mat4 view = glm::lookAt(      //
@@ -226,17 +227,17 @@ int main() {
         glm::vec3(0.0f, 0.0f, 1.0f)    //
     );
 
-    GLint uniView = glGetUniformLocation(shaderProgram, "view");
+    GLint uniView = glGetUniformLocation(rdr.shaderProgram, "view");
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view.getView()));
 
     glm::mat4 proj = glm::perspective(glm::radians(45.0f),                   //
                                       (1.0f * WINDOW_WIDTH) / WINDOW_HEIGHT, //
                                       1.0f,                                  //
                                       200.0f);
-    GLint uniProj = glGetUniformLocation(shaderProgram, "projection");
+    GLint uniProj = glGetUniformLocation(rdr.shaderProgram, "projection");
     glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
-    auto uniOverride = glGetUniformLocation(shaderProgram, "overrideColor");
+    auto uniOverride = glGetUniformLocation(rdr.shaderProgram, "overrideColor");
 
     // for (int i = 0; i < 4; i++) {
     //   for (int j = 0; j < 4; j++) {
@@ -288,8 +289,8 @@ int main() {
         time = time - floor(time);
 
         glUniform3f(uniOverride, 1.0f, 1.0f, 1.0f);
-        glUseProgram(shaderProgram);
-        glBindVertexArray(vao);
+        glUseProgram(rdr.shaderProgram);
+        glBindVertexArray(rdr.vao);
 
         for (int i = 0; i < N_BOXES; i++) {
             glm::mat4 model = glm::mat4(1.0f);
@@ -348,9 +349,9 @@ int main() {
             glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
             // std::cout << time << std::endl;
 
-            glUseProgram(shaderProgram);
+            glUseProgram(rdr.shaderProgram);
 
-            glBindVertexArray(vao);
+            glBindVertexArray(rdr.vao);
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
             glDrawArrays(GL_TRIANGLES, 6, 36);
@@ -433,15 +434,15 @@ int main() {
 
     glDeleteTextures(3, tex);
 
-    glDeleteProgram(shaderProgram);
+    glDeleteProgram(rdr.shaderProgram);
     glDeleteProgram(fragmentShader);
     glDeleteProgram(vertexShader);
 
     // glDeleteBuffers(1, &ebo);
-    glDeleteBuffers(1, &vbo);
-    glDeleteRenderbuffers(1, &rboDepthStencil);
+    glDeleteBuffers(1, &rdr.vbo);
+    // glDeleteRenderbuffers(1, &rboDepthStencil);
 
-    glDeleteVertexArrays(1, &vao);
+    glDeleteVertexArrays(1, &rdr.vao);
 
     // utils::removeImage(image);
 

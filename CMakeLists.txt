@@ -16,11 +16,13 @@ target_sources(opengltut
     PUBLIC
     src/main.cpp
     src/utils.cpp
+    src/renderer.cpp
 )
 
 target_include_directories(opengltut
     PUBLIC
     src/headers
+    src/renderer
 )
 
 find_package(OpenGL REQUIRED)
