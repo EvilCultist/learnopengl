@@ -54,7 +54,10 @@ int Renderer::bindShaders(GLint vertex, GLint fragment) {
                           (void*)(6 * sizeof(float)));
     return 0;
 }
-void Renderer::render() {
+void Renderer::render(GLuint indicies, GLsizei count) {
+
+    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT,
+                   &elements[0] + indicies);
     return; //
 }
 Renderer::~Renderer() {

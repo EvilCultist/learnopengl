@@ -306,7 +306,8 @@ int main() {
             // std::cout << time << std::endl;
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-            glDrawArrays(GL_TRIANGLES, 6, 36);
+            rdr.render(6, 36);
+            // glDrawArrays(GL_TRIANGLES, 6, 36);
         }
 
         glUniform3f(uniOverride, 0.4f, 0.4f, 0.4f);
@@ -325,7 +326,8 @@ int main() {
         //                 glm::radians(360.0f) * time, // * glm::radians(0.1f),
         //                 // glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        rdr.render(0, 6);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glDepthMask(GL_TRUE);
         glStencilFunc(GL_EQUAL, 1, 0xFF);
@@ -354,7 +356,8 @@ int main() {
             glBindVertexArray(rdr.vao);
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-            glDrawArrays(GL_TRIANGLES, 6, 36);
+            rdr.render(6, 36);
+            // glDrawArrays(GL_TRIANGLES, 6, 36);
         }
 
         // glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));

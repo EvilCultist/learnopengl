@@ -18,7 +18,7 @@ class Renderer {
     int addRenderElement(GLuint arr[3]);
     void setElements();
     int bindShaders(GLint vertex, GLint fragment);
-    void render();
+    void render(GLuint indicies, GLsizei count);
     ~Renderer();
 };
 
