@@ -21,6 +21,57 @@
 #include <renderer.h>
 #include <utils.h>
 
+GLfloat verts[] = {
+    -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // yeah no
+    13.5f,  -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, // yeah no
+    13.5f,  13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // yeah no
+    13.5f,  13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // yeah no
+    -13.5f, 13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // yeah no
+    -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // yeah no
+
+    -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // yeah no
+    0.5f,   -0.5f,  -0.5f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    0.5f,   0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    0.5f,   0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    -0.5f,  0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // yeah no
+
+    -0.5f,  -0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // yeah no
+    0.5f,   -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    -0.5f,  0.5f,   0.5f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    -0.5f,  -0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // yeah no
+
+    -0.5f,  0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, // yeah no
+    -0.5f,  0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    -0.5f,  -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    -0.5f,  -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    -0.5f,  -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // yeah no
+    -0.5f,  0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, // yeah no
+
+    0.5f,   0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, // yeah no
+    0.5f,   0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    0.5f,   -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    0.5f,   -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // yeah no
+    0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // yeah no
+    0.5f,   0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, // yeah no
+
+    -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // yeah no
+    0.5f,   -0.5f,  -0.5f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    -0.5f,  -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // yeah no
+    -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // yeah no
+
+    -0.5f,  0.5f,   -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // yeah no
+    0.5f,   0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, // yeah no
+    0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // yeah no
+    -0.5f,  0.5f,   0.5f,  1.0f, 0.5f, 0.5f, 0.0f, 0.0f, // yeah no
+    -0.5f,  0.5f,   -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  //, 0.0f // yeah no
+};
+
 // #define WINDOW_HEIGHT 1200
 #define WINDOW_HEIGHT 800
 // #define WINDOW_WIDTH 2200
@@ -55,145 +106,64 @@ int main() {
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
         return -1;
+// Renderer rdr(verts);
+#if defined use_rdr
+    // std::cout << &verts << std::endl;
+    auto rdr = new Renderer(verts);
+    // auto rdr = new Renderer(&(verts[0]));
 
-    GLfloat vertices[] = {
-        -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f, // yeah no
-        13.5f,  -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  0.0f, // yeah no
-        13.5f,  13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 1.10f, 1.0f, // yeah no
-        13.5f,  13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  1.0f, // yeah no
-        -13.5f, 13.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,  1.0f, // yeah no
-        -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f, // yeah no
+    // for (int i = 0; i < 42 * 8; i += 8)
+    //     rdr.addPoint(&vertices[i]);
+    // rdr.setPoints();
+    // rdr.debug();
 
-        -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, // yeah no
-        0.5f,   -0.5f,  -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        0.5f,   0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        0.5f,   0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        -0.5f,  0.5f,   -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, // yeah no
+    // for (int i = 0; i < 42 * 8; i += 3) {
+    //     GLuint element_arr_temp[] = {(GLuint)i, (GLuint)i + 1, (GLuint)i +
+    //     2}; rdr.addRenderElement(&element_arr_temp[0]);
+    // }
+    // rdr.setElements();
+#else
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-        -0.5f,  -0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 0.0f,  0.0f, // yeah no
-        0.5f,   -0.5f,  0.5f,  1.0f, 0.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        -0.5f,  0.5f,   0.5f,  1.0f, 0.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        -0.5f,  -0.5f,  0.5f,  1.0f, 1.0f, 0.0f, 0.0f,  0.0f, // yeah no
-
-        -0.5f,  0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, // yeah no
-        -0.5f,  0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        -0.5f,  -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        -0.5f,  -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        -0.5f,  -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, // yeah no
-        -0.5f,  0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, // yeah no
-
-        0.5f,   0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, // yeah no
-        0.5f,   0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        0.5f,   -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        0.5f,   -0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,  1.0f, // yeah no
-        0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, // yeah no
-        0.5f,   0.5f,   0.5f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, // yeah no
-
-        -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  1.0f, // yeah no
-        0.5f,   -0.5f,  -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        0.5f,   -0.5f,  0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        -0.5f,  -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 0.0f,  0.0f, // yeah no
-        -0.5f,  -0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  1.0f, // yeah no
-
-        -0.5f,  0.5f,   -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  1.0f, // yeah no
-        0.5f,   0.5f,   -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, // yeah no
-        0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        0.5f,   0.5f,   0.5f,  0.0f, 1.0f, 1.0f, 1.0f,  0.0f, // yeah no
-        -0.5f,  0.5f,   0.5f,  1.0f, 0.5f, 0.5f, 0.0f,  0.0f, // yeah no
-        -0.5f,  0.5f,   -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,  1.0f //, 0.0f // yeah no
-    };
-
-    // GLuint elements[] = {
-    //     0, 1, 2, 1, 2, 3, // top plane
-    //     4, 5, 6, 5, 6, 7, // bottom plane
-    //     0, 1, 4, 1, 4, 5, // left bl-wh
-    //     0, 2, 4, 2, 4, 6, // fwd
-    //     1, 3, 5, 3, 5, 7, // bck
-    //     2, 3, 6, 3, 6, 7, // right rd-green
-    // };
-
-    // GLuint texColorBuffer;
-    // glGenTextures(1, &texColorBuffer);
-    // glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
-    //              GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // GLuint rboDepthStencil;
-    // glGenRenderbuffers(1, &rboDepthStencil);
-    // glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
-    // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WINDOW_WIDTH,
-    //                       WINDOW_HEIGHT);
-    Renderer rdr;
-    for (int i = 0; i < 42 * 8; i += 8)
-        rdr.addPoint(&vertices[i]);
-    rdr.setPoints();
-
-    for (int i = 0; i < 42 * 8; i += 3) {
-        GLuint element_arr_temp[] = {(GLuint)i, (GLuint)i + 1, (GLuint)i + 2};
-        rdr.addRenderElement(&element_arr_temp[0]);
-    }
-    rdr.setElements();
-
-    // GLuint vao;
-    // glGenVertexArrays(1, &vao);
-    // glBindVertexArray(vao);
-
-    // GLuint vbo;
-    // glGenBuffers(1, &vbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-    // GL_STATIC_DRAW);
-
-    // GLuint ebo;
-    // glGenBuffers(1, &ebo);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements,
-    // GL_STATIC_DRAW);
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+#endif
 
     auto vertexShader =
         utils::makeShader("src/shaders/triangle.vert", GL_VERTEX_SHADER);
     auto fragmentShader =
         utils::makeShader("src/shaders/triangle.frag", GL_FRAGMENT_SHADER);
 
-    rdr.bindShaders(vertexShader, fragmentShader);
+#if defined(use_rdr)
+    rdr->bindShaders(vertexShader, fragmentShader);
+#else
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
 
-    // GLuint shaderProgram = glCreateProgram();
-    // glAttachShader(shaderProgram, vertexShader);
-    // glAttachShader(shaderProgram, fragmentShader);
+    glBindFragDataLocation(shaderProgram, 0, "outColor");
+    glLinkProgram(shaderProgram);
+    glUseProgram(shaderProgram);
 
-    // glBindFragDataLocation(shaderProgram, 0, "outColor");
-    // glLinkProgram(shaderProgram);
-    // glUseProgram(shaderProgram);
+    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          0);
 
-    // GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    // glEnableVertexAttribArray(posAttrib);
-    // glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 *
-    // sizeof(float),
-    //                       0);
+    GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+    glEnableVertexAttribArray(colAttrib);
+    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void*)(3 * sizeof(float)));
 
-    // GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-    // glEnableVertexAttribArray(colAttrib);
-    // glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 *
-    // sizeof(float),
-    //                       (void*)(3 * sizeof(float)));
-
-    // GLint texAttrib = glGetAttribLocation(shaderProgram, "texCord");
-    // glEnableVertexAttribArray(texAttrib);
-    // glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 *
-    // sizeof(float),
-    //                       (void*)(6 * sizeof(float)));
-
-    // GLuint tex;
-    // glGenTextures(1, &tex);
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, tex);
+    GLint texAttrib = glGetAttribLocation(shaderProgram, "texCord");
+    glEnableVertexAttribArray(texAttrib);
+    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void*)(6 * sizeof(float)));
+#endif
 
     GLuint tex[3];
     glGenTextures(3, tex);
@@ -201,43 +171,29 @@ int main() {
     utils::getImage("res/mask.png", GL_TEXTURE1, tex[1]);
     utils::getImage("res/glass.png", GL_TEXTURE2, tex[2]);
 
-    glUniform1i(glGetUniformLocation(rdr.shaderProgram, "texMask"), 1);
-    glUniform1i(glGetUniformLocation(rdr.shaderProgram, "texGlass"), 2);
+#if defined(use_rdr)
+    glUniform1i(glGetUniformLocation(rdr->shaderProgram, "texMask"), 1);
+    glUniform1i(glGetUniformLocation(rdr->shaderProgram, "texGlass"), 2);
+    GLint uniModel = glGetUniformLocation(rdr->shaderProgram, "model");
+    GLint uniView = glGetUniformLocation(rdr->shaderProgram, "view");
+    GLint uniProj = glGetUniformLocation(rdr->shaderProgram, "projection");
+    auto uniOverride =
+        glGetUniformLocation(rdr->shaderProgram, "overrideColor");
+#else
+    glUniform1i(glGetUniformLocation(shaderProgram, "texMask"), 1);
+    glUniform1i(glGetUniformLocation(shaderProgram, "texGlass"), 2);
+    GLint uniModel = glGetUniformLocation(shaderProgram, "model");
+    GLint uniView = glGetUniformLocation(shaderProgram, "view");
+    GLint uniProj = glGetUniformLocation(shaderProgram, "projection");
+    auto uniOverride = glGetUniformLocation(shaderProgram, "overrideColor");
+#endif
 
-    glm::mat4 model = glm::mat4(0.5f);
-    GLint uniModel = glGetUniformLocation(rdr.shaderProgram, "model");
-    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-
-    // glm::mat4 view = glm::lookAt(      //
-    //     glm::vec3(15.2f, 15.2f, 2.0f), //
-    //     glm::vec3(0.0f, 0.0f, 0.f),    //
-    //     glm::vec3(0.0f, 0.0f, 1.0f)    //
-    // );
-
-    // auto original_location_vector = glm::vec3(15.2f, 15.2f, 2.0f);
-    // auto default_up_vector = glm::vec3(0.0f, 0.0f, 1.0f);
-    // auto view = Camera(           //
-    //     original_location_vector, //
-    //                               // glm::vec3(-1.5f, -1.5f, -0.2f), //
-    //     glm::dot(original_location_vector, default_up_vector) -
-    //         default_up_vector //
-    // );
     auto view = Camera(                //
         glm::vec3(15.2f, 15.2f, 2.0f), //
         glm::vec3(0.0f, 0.0f, 1.0f)    //
     );
 
-    GLint uniView = glGetUniformLocation(rdr.shaderProgram, "view");
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view.getView()));
-
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f),                   //
-                                      (1.0f * WINDOW_WIDTH) / WINDOW_HEIGHT, //
-                                      1.0f,                                  //
-                                      200.0f);
-    GLint uniProj = glGetUniformLocation(rdr.shaderProgram, "projection");
-    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-
-    auto uniOverride = glGetUniformLocation(rdr.shaderProgram, "overrideColor");
 
     // for (int i = 0; i < 4; i++) {
     //   for (int j = 0; j < 4; j++) {
@@ -248,11 +204,11 @@ int main() {
 
     float time = 0;
     auto t_now = std::chrono::system_clock::now();
-    std::srand(
-        (int)(10e7 *
-              (float)std::chrono::duration_cast<std::chrono::duration<float>>(
-                  t_now - t_start)
-                  .count()));
+    // std::srand(
+    //     (int)(10e7 *
+    //           (float)std::chrono::duration_cast<std::chrono::duration<float>>(
+    //               t_now - t_start)
+    //               .count()));
 
     glEnable(GL_DEPTH_TEST);
     // std::cout << rand() % 10 << std::endl;
@@ -289,8 +245,14 @@ int main() {
         time = time - floor(time);
 
         glUniform3f(uniOverride, 1.0f, 1.0f, 1.0f);
-        glUseProgram(rdr.shaderProgram);
-        glBindVertexArray(rdr.vao);
+
+#if defined(use_rdr)
+        glUseProgram(rdr->shaderProgram);
+        glBindVertexArray(rdr->vao);
+#else
+        glUseProgram(shaderProgram);
+        glBindVertexArray(vao);
+#endif
 
         for (int i = 0; i < N_BOXES; i++) {
             glm::mat4 model = glm::mat4(1.0f);
@@ -306,8 +268,11 @@ int main() {
             // std::cout << time << std::endl;
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-            rdr.render(6, 36);
-            // glDrawArrays(GL_TRIANGLES, 6, 36);
+#if defined(use_rdr)
+            rdr->render(06, 36);
+#else
+            glDrawArrays(GL_TRIANGLES, 6, 36);
+#endif
         }
 
         glUniform3f(uniOverride, 0.4f, 0.4f, 0.4f);
@@ -321,13 +286,17 @@ int main() {
         glClear(GL_STENCIL_BUFFER_BIT);
 
         glm::mat4 model = glm::mat4(1.0f);
-        // model =
-        //     glm::rotate(model,                       // model,
-        //                 glm::radians(360.0f) * time, // * glm::radians(0.1f),
-        //                 // glm::vec3(0.0f, 0.0f, 1.0f));
+        model =
+            glm::rotate(model,                       // model,
+                        glm::radians(360.0f) * time, // * glm::radians(0.1f),
+                        glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-        rdr.render(0, 6);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
+
+#if defined(use_rdr)
+        rdr->render(0, 6);
+#else
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+#endif
 
         glDepthMask(GL_TRUE);
         glStencilFunc(GL_EQUAL, 1, 0xFF);
@@ -351,17 +320,19 @@ int main() {
             glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
             // std::cout << time << std::endl;
 
-            glUseProgram(rdr.shaderProgram);
-
-            glBindVertexArray(rdr.vao);
+#if defined(use_rdr)
+            glUseProgram(rdr->shaderProgram);
+            glBindVertexArray(rdr->vao);
+            rdr->render(5, 12);
+#else
+            glUseProgram(shaderProgram);
+            glBindVertexArray(vao);
+            glDrawArrays(GL_TRIANGLES, 6, 36);
+#endif
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-            rdr.render(6, 36);
-            // glDrawArrays(GL_TRIANGLES, 6, 36);
         }
 
-        // glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-        // glDrawArrays(GL_TRIANGLES, 6, 36);
         glDisable(GL_STENCIL_TEST);
 
         glfwSwapBuffers(window);
@@ -420,6 +391,9 @@ int main() {
             // view.translate(cross(view.dir, view.up) * speed * -1.0f);
             moveDir += -glm::cross(view.dir, view.up);
         }
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            moveDir += view.up;
+        }
         if (glm::length(moveDir) != 0) {
             view.translate(glm::normalize(moveDir) * speed);
         }
@@ -437,16 +411,23 @@ int main() {
 
     glDeleteTextures(3, tex);
 
-    glDeleteProgram(rdr.shaderProgram);
+#if defined(use_rdr)
+    glDeleteProgram(rdr->shaderProgram);
+    glDeleteBuffers(1, &rdr->vbo);
+    glDeleteVertexArrays(1, &rdr->vao);
+    delete rdr;
+
+#else
+    glDeleteProgram(shaderProgram);
+    glDeleteBuffers(1, &vbo);
+    glDeleteVertexArrays(1, &vao);
+
+#endif
     glDeleteProgram(fragmentShader);
     glDeleteProgram(vertexShader);
 
     // glDeleteBuffers(1, &ebo);
-    glDeleteBuffers(1, &rdr.vbo);
     // glDeleteRenderbuffers(1, &rboDepthStencil);
-
-    glDeleteVertexArrays(1, &rdr.vao);
-
     // utils::removeImage(image);
 
     // std::this_thread::sleep_for(std::chrono::seconds(10));

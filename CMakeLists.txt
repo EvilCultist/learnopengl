@@ -22,7 +22,7 @@ target_sources(opengltut
 target_include_directories(opengltut
     PUBLIC
     src/headers
-    src/renderer
+    # src/renderer
 )
 
 find_package(OpenGL REQUIRED)

@@ -14,7 +14,7 @@
 // glm::vec3 up;
 Camera::Camera(glm::vec3 location, glm::vec3 up_direction) {
     loc = location;
-    dir = glm::normalize(-location);
+    dir = -1.0f * glm::normalize(location);
     up = glm::normalize(up_direction);
 }
 void Camera::translate(glm::vec3 how_much) { //
