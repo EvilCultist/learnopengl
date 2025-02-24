@@ -1,10 +1,12 @@
 #include "renderer.h"
 #include <iostream>
 
-Renderer::Renderer(GLfloat* verts) {
+Renderer::Renderer(GLfloat* verts, size_t n_verts) {
 
     this->vertices = verts;
-    this->numVertices = 336; // 42 * 8
+    // this->numVertices = 336; // 42 * 8
+    this->numVertices = n_verts; // 42 * 8
+    std::cout << n_verts << std::endl;
 
     // std::cout << vertices << std::endl;
 
@@ -88,5 +90,8 @@ void Renderer::render(GLuint indicies, GLsizei count) {
     return; //
 }
 Renderer::~Renderer() {
+    glDeleteProgram(this->shaderProgram);
+    glDeleteBuffers(1, &this->vbo);
+    glDeleteVertexArrays(1, &this->vao);
     return; //
 }

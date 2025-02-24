@@ -1,8 +1,8 @@
 #pragma once
 #include <GL/glew.h>
-#include <vector>
+// #include <vector>
 
-// #define use_rdr
+#define use_rdr
 
 class Renderer {
   private:
@@ -15,7 +15,7 @@ class Renderer {
     GLuint vbo;
     GLuint ebo;
     GLuint shaderProgram;
-    Renderer(GLfloat* verts);
+    Renderer(GLfloat* verts, size_t n_verts);
     void debug();
     int addPoint(GLfloat arr[8]);
     void setPoints();

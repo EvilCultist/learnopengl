@@ -9,8 +9,8 @@
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
-#include <ios>
-#include <iostream>
+// #include <ios>
+// #include <iostream>
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 #include <SOIL/SOIL.h>
@@ -109,7 +109,7 @@ int main() {
 // Renderer rdr(verts);
 #if defined use_rdr
     // std::cout << &verts << std::endl;
-    auto rdr = new Renderer(verts);
+    auto rdr = new Renderer(verts, sizeof(verts));
     // auto rdr = new Renderer(&(verts[0]));
 
     // for (int i = 0; i < 42 * 8; i += 8)
@@ -269,7 +269,7 @@ int main() {
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 #if defined(use_rdr)
-            rdr->render(06, 36);
+            rdr->render(6, 36);
 #else
             glDrawArrays(GL_TRIANGLES, 6, 36);
 #endif
@@ -323,7 +323,7 @@ int main() {
 #if defined(use_rdr)
             glUseProgram(rdr->shaderProgram);
             glBindVertexArray(rdr->vao);
-            rdr->render(5, 12);
+            rdr->render(6, 36);
 #else
             glUseProgram(shaderProgram);
             glBindVertexArray(vao);
@@ -412,9 +412,9 @@ int main() {
     glDeleteTextures(3, tex);
 
 #if defined(use_rdr)
-    glDeleteProgram(rdr->shaderProgram);
-    glDeleteBuffers(1, &rdr->vbo);
-    glDeleteVertexArrays(1, &rdr->vao);
+    // glDeleteProgram(rdr->shaderProgram);
+    // glDeleteBuffers(1, &rdr->vbo);
+    // glDeleteVertexArrays(1, &rdr->vao);
     delete rdr;
 
 #else
