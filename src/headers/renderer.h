@@ -1,5 +1,6 @@
 #pragma once
 #include <GL/glew.h>
+#include <cstddef>
 // #include <vector>
 
 #define use_rdr
@@ -9,6 +10,11 @@ class Renderer {
     GLfloat* vertices;
     GLuint* elements;
     GLuint numVertices;
+    // std::vector<GLfloat>
+    void setPoints();
+    void setElements();
+    int addPoint(GLfloat arr[8]);
+    int addRenderElements(size_t len);
 
   public:
     GLuint vao;
@@ -17,10 +23,6 @@ class Renderer {
     GLuint shaderProgram;
     Renderer(GLfloat* verts, size_t n_verts);
     void debug();
-    int addPoint(GLfloat arr[8]);
-    void setPoints();
-    int addRenderElement(GLuint arr[3]);
-    void setElements();
     int bindShaders(GLint vertex, GLint fragment);
     void render(GLuint indicies, GLsizei count);
     ~Renderer();

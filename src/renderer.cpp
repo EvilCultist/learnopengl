@@ -1,4 +1,6 @@
 #include "renderer.h"
+#include <cstddef>
+#include <cstdlib>
 #include <iostream>
 
 Renderer::Renderer(GLfloat* verts, size_t n_verts) {
@@ -6,7 +8,7 @@ Renderer::Renderer(GLfloat* verts, size_t n_verts) {
     this->vertices = verts;
     // this->numVertices = 336; // 42 * 8
     this->numVertices = n_verts; // 42 * 8
-    std::cout << n_verts << std::endl;
+    // std::cout << n_verts << std::endl;
 
     // std::cout << vertices << std::endl;
 
@@ -27,13 +29,19 @@ Renderer::Renderer(GLfloat* verts, size_t n_verts) {
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
     this->setPoints();
 
-    // glGenBuffers(1, &ebo);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    this->elements = new GLuint[n_verts / (sizeof(GLfloat) * 8)];
+    // GLuint elementbuffer[n_verts];
+    this->addRenderElements(n_verts / (sizeof(GLfloat) * 8));
+    this->setElements();
 }
 void Renderer::debug() {
     // for (auto val : vertices) {
     //     std::cout << val << std::endl;
     // }
+    for (int i = 0; i < this->numVertices / (sizeof(GLfloat) * 8); i++)
+        std::cout << *(this->elements + i) << std::endl;
 }
 // int Renderer::addPoint(GLfloat arr[8]) {
 //     // for (int i = 0; i < 8; i++) {
@@ -47,15 +55,16 @@ void Renderer::setPoints() {
     glBufferData(GL_ARRAY_BUFFER, this->numVertices, this->vertices,
                  GL_STATIC_DRAW);
 }
-// int Renderer::addRenderElement(GLuint arr[3]) {
-//     // for (int i = 0; i < 3; i++)
-//     //     elements.push_back(arr[i]);
-//     return 0; //
-// }
-// void Renderer::setElements() {
-//     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), &elements[0],
-//     //              GL_STATIC_DRAW);
-// }
+int Renderer::addRenderElements(size_t len) {
+    for (int i = 0; i < len; i++)
+        this->elements[i] = i;
+    return 0; //
+}
+void Renderer::setElements() {
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 sizeof(GLuint) * (this->numVertices / (sizeof(GLfloat) * 8)),
+                 this->elements, GL_STATIC_DRAW);
+}
 int Renderer::bindShaders(GLint vertex, GLint fragment) {
 
     this->shaderProgram = glCreateProgram();
@@ -83,15 +92,20 @@ int Renderer::bindShaders(GLint vertex, GLint fragment) {
     return 0;
 }
 void Renderer::render(GLuint indicies, GLsizei count) {
-    glDrawArrays(GL_TRIANGLES, indicies, count);
+    // glDrawArrays(GL_TRIANGLES, indicies, count);
+    // std::cout << count << '\t' << indicies << std::endl;
 
-    // glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT,
-    //                &elements[0] + indicies);
+    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT,
+                   (void*)(indicies * sizeof(GLuint)));
+    // this->elements + indicies);
     return; //
 }
 Renderer::~Renderer() {
     glDeleteProgram(this->shaderProgram);
     glDeleteBuffers(1, &this->vbo);
     glDeleteVertexArrays(1, &this->vao);
+    // this->debug();
+    // free(this->elements);
+    delete this->elements;
     return; //
 }
