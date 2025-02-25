@@ -1,26 +1,13 @@
 #pragma once
-#include <chrono>
-#include <string>
-#define GLFW_DLL
 #include <GL/glew.h>
+#include <chrono>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/fwd.hpp>
 #include <glm/trigonometric.hpp>
 #include <iostream>
-
-class Camera {
-  public:
-    glm::vec3 loc;
-    glm::vec3 dir;
-    glm::vec3 up;
-
-    Camera(glm::vec3 location, glm::vec3 up_direction);
-    void translate(glm::vec3 how_much);
-    void rotate(glm::vec3 axis, float deg);
-    glm::mat4 getView();
-};
+#include <string>
 
 namespace utils {
 class Timer {
@@ -37,4 +24,4 @@ void getImage(std::string filePath, GLenum tex, GLint loc);
 GLint makeShader(std::string path, GLenum type);
 // void removeImage(unsigned char *image);
 // void mkImage(const std::string &filepath);
-} // namespace utils
+}; // namespace utils

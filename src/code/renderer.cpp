@@ -6,8 +6,24 @@
 Renderer::Renderer(GLfloat* verts, size_t n_verts) {
 
     this->vertices = verts;
-    // this->numVertices = 336; // 42 * 8
     this->numVertices = n_verts; // 42 * 8
+
+    glGenVertexArrays(1, &this->vao);
+    glBindVertexArray(this->vao);
+
+    glGenBuffers(1, &this->vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+    this->setPoints();
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    this->elements = new GLuint[n_verts / (sizeof(GLfloat) * 8)];
+    this->addRenderElements(n_verts / (sizeof(GLfloat) * 8));
+    this->setElements();
+}
+void Renderer::debug() {
+    // this->numVertices = 336; // 42 * 8
     // std::cout << n_verts << std::endl;
 
     // std::cout << vertices << std::endl;
@@ -21,36 +37,12 @@ Renderer::Renderer(GLfloat* verts, size_t n_verts) {
     //     }
     //     std::cout << std::endl;
     // }
-
-    glGenVertexArrays(1, &this->vao);
-    glBindVertexArray(this->vao);
-
-    glGenBuffers(1, &this->vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-    this->setPoints();
-
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    this->elements = new GLuint[n_verts / (sizeof(GLfloat) * 8)];
-    // GLuint elementbuffer[n_verts];
-    this->addRenderElements(n_verts / (sizeof(GLfloat) * 8));
-    this->setElements();
-}
-void Renderer::debug() {
     // for (auto val : vertices) {
     //     std::cout << val << std::endl;
     // }
-    for (int i = 0; i < this->numVertices / (sizeof(GLfloat) * 8); i++)
-        std::cout << *(this->elements + i) << std::endl;
+    // for (int i = 0; i < this->numVertices / (sizeof(GLfloat) * 8); i++)
+    //     std::cout << *(this->elements + i) << std::endl;
 }
-// int Renderer::addPoint(GLfloat arr[8]) {
-//     // for (int i = 0; i < 8; i++) {
-//     //     // std::cout << arr[i] << " ";
-//     //     vertices.push_back(arr[i]);
-//     // }
-//     // std::cout << std::endl;
-//     return 0; //
-// }
 void Renderer::setPoints() {
     glBufferData(GL_ARRAY_BUFFER, this->numVertices, this->vertices,
                  GL_STATIC_DRAW);

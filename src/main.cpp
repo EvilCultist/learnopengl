@@ -12,6 +12,7 @@
 // #include <ios>
 // #include <iostream>
 #define GLFW_DLL
+#include "camera.h"
 #include <GLFW/glfw3.h>
 #include <SOIL/SOIL.h>
 #include <cmath>
@@ -20,6 +21,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <renderer.h>
 #include <utils.h>
+
+// #define WINDOW_HEIGHT 1200
+#define WINDOW_HEIGHT 800
+// #define WINDOW_WIDTH 2200
+#define WINDOW_WIDTH 1200
+#define N_BOXES 8
 
 GLfloat verts[] = {
     -13.5f, -13.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // yeah no
@@ -72,22 +79,6 @@ GLfloat verts[] = {
     -0.5f,  0.5f,   -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  //, 0.0f // yeah no
 };
 
-// #define WINDOW_HEIGHT 1200
-#define WINDOW_HEIGHT 800
-// #define WINDOW_WIDTH 2200
-#define WINDOW_WIDTH 1200
-#define N_BOXES 8
-
-float fov = 45.0f;
-
-void updateScroll(GLFWwindow* window, double delx, double dely) {
-    fov += dely;
-    if (fov > 80)
-        fov = 80;
-    if (fov < 1)
-        fov = 1;
-}
-
 int main() {
     auto t_start = std::chrono::system_clock::now();
     if (!glfwInit())
@@ -106,31 +97,9 @@ int main() {
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
         return -1;
-// Renderer rdr(verts);
+
 #if defined use_rdr
-    // std::cout << &verts << std::endl;
     auto rdr = new Renderer(verts, sizeof(verts));
-    // auto rdr = new Renderer(&(verts[0]));
-
-    // for (int i = 0; i < 42 * 8; i += 8)
-    //     rdr.addPoint(&vertices[i]);
-    // rdr.setPoints();
-    // rdr.debug();
-
-    // for (int i = 0; i < 42 * 8; i += 3) {
-    //     GLuint element_arr_temp[] = {(GLuint)i, (GLuint)i + 1, (GLuint)i +
-    //     2}; rdr.addRenderElement(&element_arr_temp[0]);
-    // }
-    // rdr.setElements();
-#else
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 #endif
 
     auto vertexShader =
@@ -140,29 +109,6 @@ int main() {
 
 #if defined(use_rdr)
     rdr->bindShaders(vertexShader, fragmentShader);
-#else
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    glBindFragDataLocation(shaderProgram, 0, "outColor");
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-
-    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          0);
-
-    GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(3 * sizeof(float)));
-
-    GLint texAttrib = glGetAttribLocation(shaderProgram, "texCord");
-    glEnableVertexAttribArray(texAttrib);
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(6 * sizeof(float)));
 #endif
 
     GLuint tex[3];
@@ -179,13 +125,6 @@ int main() {
     GLint uniProj = glGetUniformLocation(rdr->shaderProgram, "projection");
     auto uniOverride =
         glGetUniformLocation(rdr->shaderProgram, "overrideColor");
-#else
-    glUniform1i(glGetUniformLocation(shaderProgram, "texMask"), 1);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texGlass"), 2);
-    GLint uniModel = glGetUniformLocation(shaderProgram, "model");
-    GLint uniView = glGetUniformLocation(shaderProgram, "view");
-    GLint uniProj = glGetUniformLocation(shaderProgram, "projection");
-    auto uniOverride = glGetUniformLocation(shaderProgram, "overrideColor");
 #endif
 
     auto view = Camera(                //
@@ -249,9 +188,6 @@ int main() {
 #if defined(use_rdr)
         glUseProgram(rdr->shaderProgram);
         glBindVertexArray(rdr->vao);
-#else
-        glUseProgram(shaderProgram);
-        glBindVertexArray(vao);
 #endif
 
         for (int i = 0; i < N_BOXES; i++) {
@@ -270,8 +206,6 @@ int main() {
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 #if defined(use_rdr)
             rdr->render(6, 36);
-#else
-            glDrawArrays(GL_TRIANGLES, 6, 36);
 #endif
         }
 
@@ -294,8 +228,6 @@ int main() {
 
 #if defined(use_rdr)
         rdr->render(0, 6);
-#else
-        glDrawArrays(GL_TRIANGLES, 0, 6);
 #endif
 
         glDepthMask(GL_TRUE);
@@ -324,10 +256,6 @@ int main() {
             glUseProgram(rdr->shaderProgram);
             glBindVertexArray(rdr->vao);
             rdr->render(6, 36);
-#else
-            glUseProgram(shaderProgram);
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 6, 36);
 #endif
 
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -365,41 +293,11 @@ int main() {
         //     std::cerr << glm::dot(view.up, view.dir) << std::endl;
         // }
 
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, GL_TRUE);
+        if (view.pollInput(window) == -1)
             continue;
-        }
-        const float speed = 0.03;
-        glm::vec3 moveDir = glm::vec3(0.0f);
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_UP)) {
-            // view.translate(view.dir * speed);
-            moveDir += view.dir;
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_DOWN)) {
-            // view.translate(view.dir * speed * -1.0f);
-            moveDir += -view.dir;
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_RIGHT)) {
-            // view.translate(cross(view.dir, view.up) * speed);
-            moveDir += glm::cross(view.dir, view.up);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_LEFT)) {
-            // view.translate(cross(view.dir, view.up) * speed * -1.0f);
-            moveDir += -glm::cross(view.dir, view.up);
-        }
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            moveDir += view.up;
-        }
-        if (glm::length(moveDir) != 0) {
-            view.translate(glm::normalize(moveDir) * speed);
-        }
-        glfwSetScrollCallback(window, updateScroll);
+
         glm::mat4 proj =
-            glm::perspective(glm::radians(fov),                     //
+            glm::perspective(glm::radians(view.fov),                //
                              (1.0f * WINDOW_WIDTH) / WINDOW_HEIGHT, //
                              1.0f,                                  //
                              200.0f);
@@ -416,11 +314,6 @@ int main() {
     // glDeleteBuffers(1, &rdr->vbo);
     // glDeleteVertexArrays(1, &rdr->vao);
     delete rdr;
-
-#else
-    glDeleteProgram(shaderProgram);
-    glDeleteBuffers(1, &vbo);
-    glDeleteVertexArrays(1, &vao);
 
 #endif
     glDeleteProgram(fragmentShader);

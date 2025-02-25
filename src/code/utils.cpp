@@ -12,24 +12,6 @@
 // glm::vec3 loc;
 // glm::vec3 dir;
 // glm::vec3 up;
-Camera::Camera(glm::vec3 location, glm::vec3 up_direction) {
-    loc = location;
-    dir = -1.0f * glm::normalize(location);
-    up = glm::normalize(up_direction);
-}
-void Camera::translate(glm::vec3 how_much) { //
-    loc += how_much;
-}
-void Camera::rotate(glm::vec3 axis, float deg) { //
-    glm::mat4 rotation = glm::mat4(1.0f);
-    rotation = glm::rotate(rotation, glm::radians(deg), axis);
-    // dir = glm::normalize(rotation * glm::vec4(dir, 1.0f));
-    dir = glm::normalize(rotation * glm::vec4(dir, 1.0f));
-    // up = glm::normalize(rotation * glm::vec4(up, 1.0f));
-};
-
-glm::mat4 Camera::getView() { return glm::lookAt(loc, loc + dir, up); }
-
 utils::Timer::Timer() {
     auto start = std::chrono::high_resolution_clock::now();
 }

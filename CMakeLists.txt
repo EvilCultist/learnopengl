@@ -15,8 +15,9 @@ set_target_properties(opengltut PROPERTIES
 target_sources(opengltut
     PUBLIC
     src/main.cpp
-    src/utils.cpp
-    src/renderer.cpp
+    src/code/utils.cpp
+    src/code/renderer.cpp
+    src/code/camera.cpp
 )
 
 target_include_directories(opengltut
