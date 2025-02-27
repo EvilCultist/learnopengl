@@ -5,27 +5,6 @@
 
 Renderer::Renderer(GLfloat* verts, size_t n_verts) {
 
-    //                           n * n_pts
-    this->cube = (GLfloat*)calloc(8 * 3, sizeof(GLfloat));
-    int s = 0;
-    for (GLfloat i = -0.5f; i <= 0.5f; i++) {
-        for (GLfloat j = -0.5f; j <= 0.5f; j++) {
-            for (GLfloat k = -0.5f; k <= 0.5f; k++) {
-                this->cube[s * 3] = i;
-                this->cube[s * 3 + 1] = j;
-                this->cube[s * 3 + 2] = k;
-                // std::cout << i << '\t' << j << '\t' << k << std::endl;
-                s++;
-            }
-        }
-    }
-    // std::cout << "\n\n\n" << std::endl;
-    // for (int s = 0; s < 8 * 3; ++s) {
-    //     if (s % 3 == 0)
-    //         std::cout << std::endl;
-    //     std::cout << this->cube[s] << '\t';
-    // }
-
     this->vertices = verts;
     this->numVertices = n_verts; // 42 * 8
 
@@ -120,6 +99,5 @@ Renderer::~Renderer() {
     // this->debug();
     // free(this->elements);
     delete this->elements;
-    free(this->cube);
     return; //
 }

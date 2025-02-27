@@ -10,7 +10,6 @@ class Renderer {
     GLfloat* vertices;
     GLuint* elements;
     GLuint numVertices;
-    GLfloat* cube;
     // std::vector<GLfloat>
     void setPoints();
     void setElements();
