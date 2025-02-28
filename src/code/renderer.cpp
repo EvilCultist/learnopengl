@@ -1,33 +1,29 @@
 #include "renderer.h"
+#include <GL/gl.h>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
 
-Renderer::Renderer(GLfloat* verts, size_t n_verts) {
+#define n_elems 12 * 3
+
+Renderer::Renderer() {
 
     //                           n * n_pts
-    this->cube = (GLfloat*)calloc(8 * 3, sizeof(GLfloat));
+    this->vertices = (GLfloat*)calloc(8 * 3, sizeof(GLfloat));
     int s = 0;
     for (GLfloat i = -0.5f; i <= 0.5f; i++) {
         for (GLfloat j = -0.5f; j <= 0.5f; j++) {
             for (GLfloat k = -0.5f; k <= 0.5f; k++) {
-                this->cube[s * 3] = i;
-                this->cube[s * 3 + 1] = j;
-                this->cube[s * 3 + 2] = k;
+                this->vertices[s * 3] = i;
+                this->vertices[s * 3 + 1] = j;
+                this->vertices[s * 3 + 2] = k;
                 // std::cout << i << '\t' << j << '\t' << k << std::endl;
                 s++;
             }
         }
     }
-    // std::cout << "\n\n\n" << std::endl;
-    // for (int s = 0; s < 8 * 3; ++s) {
-    //     if (s % 3 == 0)
-    //         std::cout << std::endl;
-    //     std::cout << this->cube[s] << '\t';
-    // }
 
-    this->vertices = verts;
-    this->numVertices = n_verts; // 42 * 8
+    this->numVertices = 8;
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
@@ -39,43 +35,31 @@ Renderer::Renderer(GLfloat* verts, size_t n_verts) {
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-    this->elements = new GLuint[n_verts / (sizeof(GLfloat) * 8)];
-    this->addRenderElements(n_verts / (sizeof(GLfloat) * 8));
+    this->addRenderElements(n_elems);
     this->setElements();
 }
 void Renderer::debug() {
-    // this->numVertices = 336; // 42 * 8
-    // std::cout << n_verts << std::endl;
-
-    // std::cout << vertices << std::endl;
-
-    // for (int i = 0; i < 8 * 42; i += 8) {
-    //     if (i % (8 * 6) == 0) {
-    //         std::cout << std::endl;
-    //     }
-    //     for (int j = 0; j < 8; j++) {
-    //         std::cout << *(this->vertices + i + j) << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // for (auto val : vertices) {
-    //     std::cout << val << std::endl;
-    // }
-    // for (int i = 0; i < this->numVertices / (sizeof(GLfloat) * 8); i++)
-    //     std::cout << *(this->elements + i) << std::endl;
+    // for (int i = 0; i < n_elems; i++)
+    //     std::cout << this->elements[i] << std::endl;
+}
+void Renderer::addRenderElements(size_t len) {
+    GLuint elems[] = {0, 1, 2, 3, 7, 1, 5, 0, 4, 2, 6, 7, 4, 5};
+    this->elements = new GLuint[len];
+    for (int i = 0; i < 12; i++) {
+        this->elements[(3 * i)] = elems[i];
+        this->elements[(3 * i) + 1] = elems[i + 1];
+        this->elements[(3 * i) + 2] = elems[i + 2];
+    }
 }
 void Renderer::setPoints() {
-    glBufferData(GL_ARRAY_BUFFER, this->numVertices, this->vertices,
-                 GL_STATIC_DRAW);
-}
-int Renderer::addRenderElements(size_t len) {
-    for (int i = 0; i < len; i++)
-        this->elements[i] = i;
-    return 0; //
+    glBufferData(GL_ARRAY_BUFFER, this->numVertices * sizeof(GLfloat) * 3,
+                 this->vertices, GL_STATIC_DRAW);
 }
 void Renderer::setElements() {
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 sizeof(GLuint) * (this->numVertices / (sizeof(GLfloat) * 8)),
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+    //              sizeof(GLuint) * (this->numVertices / (sizeof(GLfloat) *
+    //              8)), this->elements, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_elems * sizeof(GLuint),
                  this->elements, GL_STATIC_DRAW);
 }
 int Renderer::bindShaders(GLint vertex, GLint fragment) {
@@ -84,42 +68,40 @@ int Renderer::bindShaders(GLint vertex, GLint fragment) {
     glAttachShader(this->shaderProgram, vertex);
     glAttachShader(this->shaderProgram, fragment);
 
-    glBindFragDataLocation(this->shaderProgram, 0, "outColor");
+    glBindFragDataLocation(this->shaderProgram, 0, "fragColor");
     glLinkProgram(this->shaderProgram);
     glUseProgram(this->shaderProgram);
 
-    GLint posAttrib = glGetAttribLocation(this->shaderProgram, "position");
+    GLint posAttrib = glGetAttribLocation(this->shaderProgram, "pos");
     glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
                           0);
 
-    GLint colAttrib = glGetAttribLocation(this->shaderProgram, "color");
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(3 * sizeof(float)));
-
-    GLint texAttrib = glGetAttribLocation(this->shaderProgram, "texCord");
-    glEnableVertexAttribArray(texAttrib);
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void*)(6 * sizeof(float)));
     return 0;
 }
-void Renderer::render(GLuint indicies, GLsizei count) {
+void Renderer::render() {
     // glDrawArrays(GL_TRIANGLES, indicies, count);
     // std::cout << count << '\t' << indicies << std::endl;
 
-    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT,
-                   (void*)(indicies * sizeof(GLuint)));
+    // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT,
+    //                (void*)(6 * sizeof(GLuint)));
+
+    // glDrawElements(GL_TRIANGLE_STRIP, n_elems * sizeof(GLuint),
+    // GL_UNSIGNED_INT,
+    //                0);
+    // glDrawArrays(GL_TRIANGLE_STRIP, 0, n_elems);
+
+    glDrawElements(GL_TRIANGLES, n_elems * 3, GL_UNSIGNED_INT, 0);
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+    // glDrawArrays(GL_TRIANGLES, 3, 6);
     // this->elements + indicies);
-    return; //
 }
 Renderer::~Renderer() {
     glDeleteProgram(this->shaderProgram);
     glDeleteBuffers(1, &this->vbo);
     glDeleteVertexArrays(1, &this->vao);
-    // this->debug();
-    // free(this->elements);
+    this->debug();
     delete this->elements;
-    free(this->cube);
+    free(this->vertices);
     return; //
 }

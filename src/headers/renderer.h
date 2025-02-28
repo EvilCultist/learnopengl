@@ -3,29 +3,26 @@
 #include <cstddef>
 // #include <vector>
 
-#define use_rdr
-
 class Renderer {
   private:
     GLfloat* vertices;
     GLuint* elements;
     GLuint numVertices;
-    GLfloat* cube;
     // std::vector<GLfloat>
     void setPoints();
     void setElements();
     int addPoint(GLfloat arr[8]);
-    int addRenderElements(size_t len);
+    void addRenderElements(size_t len);
 
   public:
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
     GLuint shaderProgram;
-    Renderer(GLfloat* verts, size_t n_verts);
+    Renderer();
     void debug();
     int bindShaders(GLint vertex, GLint fragment);
-    void render(GLuint indicies, GLsizei count);
+    void render();
     ~Renderer();
 };
 

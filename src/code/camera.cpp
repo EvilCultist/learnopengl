@@ -1,4 +1,5 @@
 #include "camera.h"
+#include <GLFW/glfw3.h>
 
 Camera::Camera(glm::vec3 location, glm::vec3 up_direction) {
     loc = location;
@@ -32,8 +33,17 @@ int Camera::pollInput(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, GL_TRUE);
         return -1;
     }
-    const float speed = 0.03;
+    const float speed = 0.06;
     glm::vec3 moveDir = glm::vec3(0.0f);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        moveDir += this->up;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        moveDir -= this->up;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+        moveDir -= this->up;
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
         glfwGetKey(window, GLFW_KEY_UP)) {
         // this->translate(this->dir * speed);
