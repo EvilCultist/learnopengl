@@ -1,6 +1,8 @@
 #pragma once
 #include <GL/glew.h>
 #include <cstddef>
+#include <string>
+#include <vector>
 // #include <vector>
 
 class Renderer {
@@ -18,10 +20,12 @@ class Renderer {
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
-    GLuint shaderProgram;
+    // GLuint shaderProgram;
+    std::vector<GLuint> shaderProgram;
     Renderer();
     void debug();
-    int bindShaders(GLint vertex, GLint fragment);
+    int makeShader(std::string name);
+    int bindShaders(int choice);
     void render();
     ~Renderer();
 };

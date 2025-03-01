@@ -28,7 +28,7 @@
 #define WINDOW_HEIGHT 800
 // #define WINDOW_WIDTH 2200
 #define WINDOW_WIDTH 1200
-#define N_BOXES 8
+#define N_BOXES 14
 
 int main() {
     auto t_start = std::chrono::system_clock::now();
@@ -51,31 +51,54 @@ int main() {
 
     auto rdr = new Renderer();
 
-    auto vertexShader =
-        utils::makeShader("src/shaders/lighting.vert", GL_VERTEX_SHADER);
-    auto fragmentShader =
-        utils::makeShader("src/shaders/lighting.frag", GL_FRAGMENT_SHADER);
+    // auto vertexShader =
+    //     utils::makeShader("src/shaders/lighting.vert", GL_VERTEX_SHADER);
+    // auto fragmentShader =
+    //     utils::makeShader("src/shaders/lighting.frag", GL_FRAGMENT_SHADER);
 
-    rdr->bindShaders(vertexShader, fragmentShader);
+    // rdr->bindShaders(vertexShader, fragmentShader);
 
-    glm::vec3 ambientColor(1.0f, 1.0f, 1.0f);
+    int lightShader = rdr->makeShader("lightSource");
+    rdr->bindShaders(lightShader);
+
+    glm::vec3 lightColor(0.0f, 0.0f, 1.0f);
     glm::vec3 baseColor(1.0f, 0.5f, 0.31f);
 
-    GLint uniBase = glGetUniformLocation(rdr->shaderProgram, "baseColor");
-    GLint uniModel = glGetUniformLocation(rdr->shaderProgram, "model");
-    GLint uniView = glGetUniformLocation(rdr->shaderProgram, "view");
-    GLint uniProj = glGetUniformLocation(rdr->shaderProgram, "proj");
+    GLint uniLightModel =
+        glGetUniformLocation(rdr->shaderProgram[lightShader], "model");
+    GLint uniLightView =
+        glGetUniformLocation(rdr->shaderProgram[lightShader], "view");
+    GLint uniLightProj =
+        glGetUniformLocation(rdr->shaderProgram[lightShader], "proj");
+    glUniform3f(
+        glGetUniformLocation(rdr->shaderProgram[lightShader], "lightColor"),
+        1.0f, 1.0f, 1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+    glUniformMatrix4fv(uniLightModel, 1, GL_FALSE, glm::value_ptr(model));
 
-    glUniform3fv(glGetUniformLocation(rdr->shaderProgram, "ambientLight"), 1,
-                 glm::value_ptr(ambientColor));
+    int cubeShader = rdr->makeShader("lighting");
+    rdr->bindShaders(cubeShader);
+
+    GLint uniBase =
+        glGetUniformLocation(rdr->shaderProgram[cubeShader], "baseColor");
+    GLint uniModel =
+        glGetUniformLocation(rdr->shaderProgram[cubeShader], "model");
+    GLint uniView =
+        glGetUniformLocation(rdr->shaderProgram[cubeShader], "view");
+    GLint uniProj =
+        glGetUniformLocation(rdr->shaderProgram[cubeShader], "proj");
+
+    glUniform3fv(
+        glGetUniformLocation(rdr->shaderProgram[cubeShader], "lightColor"), 1,
+        glm::value_ptr(lightColor));
     glUniform3fv(uniBase, 1, glm::value_ptr(baseColor));
+
+    // glUniform3fv(uniBase, 1, glm::value_ptr(lightColor));
 
     auto view = Camera(                //
         glm::vec3(15.2f, 15.2f, 2.0f), //
         glm::vec3(0.0f, 0.0f, 1.0f)    //
     );
-
-    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view.getView()));
 
     float time = 0;
     auto t_now = std::chrono::system_clock::now();
@@ -101,6 +124,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUniformMatrix4fv(uniView, 1, GL_FALSE,
                            glm::value_ptr(view.getView()));
+        glUniformMatrix4fv(uniLightView, 1, GL_FALSE,
+                           glm::value_ptr(view.getView()));
 
         t_now = std::chrono::system_clock::now();
         float t_diff = std::chrono::duration_cast<std::chrono::duration<float>>(
@@ -115,15 +140,16 @@ int main() {
             baseColor =
                 glm::vec3(((rand() % 256) / 256.0f), ((rand() % 256) / 256.0f),
                           ((rand() % 256) / 256.0f));
+            std::cout << baseColor.x << " " << baseColor.y << " " << baseColor.z
+                      << std::endl;
         }
 
-        glUseProgram(rdr->shaderProgram);
         glBindVertexArray(rdr->vao);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform3fv(uniBase, 1, glm::value_ptr(ambientColor));
-        rdr->render();
+        // glUseProgram(rdr->shaderProgram[lightShader]);
+        // glBindVertexArray(rdr->vao);
+        // rdr->render();
+        // glUseProgram(rdr->shaderProgram[cubeShader]);
 
         for (int i = 0; i < N_BOXES; i++) {
             glUniform3fv(uniBase, 1, glm::value_ptr(baseColor));
@@ -176,6 +202,12 @@ int main() {
                              1.0f,                                  //
                              200.0f);
         glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+        glUniformMatrix4fv(uniLightProj, 1, GL_FALSE,
+                           glm::value_ptr(glm::perspective(
+                               glm::radians(view.fov),                //
+                               (1.0f * WINDOW_WIDTH) / WINDOW_HEIGHT, //
+                               1.0f,                                  //
+                               200.0f)));
     }
     // std::cout << view.dir.x << view.dir.y << view.dir.z << std::endl;
     // std::cout << view.up.x << view.up.y << view.up.z << std::endl;
@@ -183,13 +215,13 @@ int main() {
 
     // glDeleteTextures(3, tex);
 
-    // glDeleteProgram(rdr->shaderProgram);
+    // glDeleteProgram(rdr->shaderProgram[cubeShader]);
     // glDeleteBuffers(1, &rdr->vbo);
     // glDeleteVertexArrays(1, &rdr->vao);
     delete rdr;
 
-    glDeleteProgram(fragmentShader);
-    glDeleteProgram(vertexShader);
+    // glDeleteProgram(fragmentShader);
+    // glDeleteProgram(vertexShader);
 
     // glDeleteBuffers(1, &ebo);
     // glDeleteRenderbuffers(1, &rboDepthStencil);

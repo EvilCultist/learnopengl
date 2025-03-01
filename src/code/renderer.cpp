@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "utils.h"
 #include <GL/gl.h>
 #include <cstddef>
 #include <cstdlib>
@@ -62,17 +63,24 @@ void Renderer::setElements() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_elems * sizeof(GLuint),
                  this->elements, GL_STATIC_DRAW);
 }
-int Renderer::bindShaders(GLint vertex, GLint fragment) {
+int Renderer::makeShader(std::string name) {
+    auto vertexShader =
+        utils::makeShader("src/shaders/" + name + ".vert", GL_VERTEX_SHADER);
+    auto fragmentShader =
+        utils::makeShader("src/shaders/" + name + ".frag", GL_FRAGMENT_SHADER);
+    auto shader = glCreateProgram();
+    glAttachShader(shader, vertexShader);
+    glAttachShader(shader, fragmentShader);
+    this->shaderProgram.push_back(shader);
+    return this->shaderProgram.size() - 1;
+}
+int Renderer::bindShaders(int choice) {
 
-    this->shaderProgram = glCreateProgram();
-    glAttachShader(this->shaderProgram, vertex);
-    glAttachShader(this->shaderProgram, fragment);
+    glBindFragDataLocation(this->shaderProgram[choice], 0, "fragColor");
+    glLinkProgram(this->shaderProgram[choice]);
+    glUseProgram(this->shaderProgram[choice]);
 
-    glBindFragDataLocation(this->shaderProgram, 0, "fragColor");
-    glLinkProgram(this->shaderProgram);
-    glUseProgram(this->shaderProgram);
-
-    GLint posAttrib = glGetAttribLocation(this->shaderProgram, "pos");
+    GLint posAttrib = glGetAttribLocation(this->shaderProgram[choice], "pos");
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
                           0);
@@ -97,7 +105,8 @@ void Renderer::render() {
     // this->elements + indicies);
 }
 Renderer::~Renderer() {
-    glDeleteProgram(this->shaderProgram);
+    for (auto val : this->shaderProgram)
+        glDeleteProgram(val);
     glDeleteBuffers(1, &this->vbo);
     glDeleteVertexArrays(1, &this->vao);
     this->debug();
