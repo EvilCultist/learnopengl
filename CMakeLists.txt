@@ -30,8 +30,10 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
-find_library(SOIL2 soil2-debug)
+find_library(SOIL2 REQUIRED)
+find_library(soil2-debug REQUIRED)
 # find_library(SOIL_LIBRARY soil-debug)
+
 
 
 if(glfw3_FOUND)
