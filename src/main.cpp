@@ -16,7 +16,7 @@
 #define GLFW_DLL
 #include "camera.h"
 #include <GLFW/glfw3.h>
-#include <SOIL/SOIL.h>
+/*#include <stb_image.h>*/
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,10 +24,11 @@
 #include <renderer.h>
 #include <utils.h>
 
-// #define WINDOW_HEIGHT 1200
+/*#define WINDOW_HEIGHT 1200*/
 #define WINDOW_HEIGHT 800
-// #define WINDOW_WIDTH 2200
+/*#define WINDOW_WIDTH 2200*/
 #define WINDOW_WIDTH 1200
+
 #define N_BOXES 14
 
 int main() {
@@ -39,6 +40,12 @@ int main() {
 
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL",
                                           nullptr, nullptr);
+    glViewport(0, 0, 1200, 800); 
+    GLsizei frameBufferWidth, frameBufferHeight;
+    glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
+
+    std::cout << frameBufferHeight << std::endl;
+    std::cout << frameBufferWidth << std::endl;
 
     if (!window)
         return -1;
@@ -61,7 +68,7 @@ int main() {
     int lightShader = rdr->makeShader("lightSource");
     rdr->bindShaders(lightShader);
 
-    glm::vec3 lightColor(0.0f, 0.0f, 1.0f);
+    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
     glm::vec3 baseColor(1.0f, 0.5f, 0.31f);
 
     GLint uniLightModel =

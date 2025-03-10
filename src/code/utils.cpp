@@ -1,7 +1,9 @@
 #include "utils.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <SOIL/SOIL.h>
+/*#include <SOIL/SOIL.h>*/
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #include <chrono>
 #include <cstddef>
 #include <fstream>
@@ -29,6 +31,7 @@ void utils::glfwHints() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    /*glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);*/
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 }
 
@@ -57,9 +60,9 @@ std::string utils::readFile(const std::string& filePath) {
 void utils::getImage(std::string filePath, GLenum tex, GLint loc) {
     glActiveTexture(tex);
     glBindTexture(GL_TEXTURE_2D, loc);
-    int width, height;
+    int width, height, nrchannels;
     unsigned char* image =
-        SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+        stbi_load(filePath.c_str(), &width, &height, &nrchannels, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, image);
     // settings functions
@@ -73,7 +76,7 @@ void utils::getImage(std::string filePath, GLenum tex, GLint loc) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // import texture before this
     glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
+    /*SOIL_free_image_data(image);*/
 }
 
 int checkIfShaderDidOk(GLuint shader) {
