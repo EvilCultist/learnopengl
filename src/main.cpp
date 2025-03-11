@@ -31,6 +31,12 @@
 
 #define N_BOXES 14
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+
 int main() {
     auto t_start = std::chrono::system_clock::now();
     if (!glfwInit())
@@ -40,9 +46,11 @@ int main() {
 
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL",
                                           nullptr, nullptr);
-    glViewport(0, 0, 1200, 800); 
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    /*glViewport(0, 0, 1200, 800);*/
     GLsizei frameBufferWidth, frameBufferHeight;
     glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
+    glViewport(0, 0, 1200, 800);
 
     std::cout << frameBufferHeight << std::endl;
     std::cout << frameBufferWidth << std::endl;
