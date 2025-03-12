@@ -14,6 +14,7 @@
 // #include <ios>
 // #include <iostream>
 #define GLFW_DLL
+/*#define GLFW_*/
 #include "camera.h"
 #include <GLFW/glfw3.h>
 /*#include <stb_image.h>*/
@@ -46,11 +47,11 @@ int main() {
 
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL",
                                           nullptr, nullptr);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    /*glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);*/
     /*glViewport(0, 0, 1200, 800);*/
     GLsizei frameBufferWidth, frameBufferHeight;
     glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
-    glViewport(0, 0, 1200, 800);
+    glViewport(0, 0, 12000*1.5, 8000*1.5);
 
     std::cout << frameBufferHeight << std::endl;
     std::cout << frameBufferWidth << std::endl;
