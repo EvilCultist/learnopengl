@@ -20,6 +20,7 @@ target_sources(opengltut
     src/code/utils.cpp
     src/code/renderer.cpp
     src/code/camera.cpp
+    src/code/shader.cpp
 )
 
 target_include_directories(opengltut
