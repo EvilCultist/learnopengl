@@ -1,15 +1,15 @@
-#include "camera2.h"
+#include "camera.h"
 /*#include <GLFW/glfw3.h>*/
 
-Camera2::Camera2(glm::vec3 location, glm::vec3 up_direction) {
+Camera::Camera(glm::vec3 location, glm::vec3 up_direction) {
     this->loc = location;
     this->dir = -1.0f * glm::normalize(location);
     this->up = glm::normalize(up_direction);
 }
-void Camera2::translate(glm::vec3 how_much) { //
+void Camera::translate(glm::vec3 how_much) { //
     this->loc += how_much;
 }
-void Camera2::rotate(glm::vec3 axis, float deg) { //
+void Camera::rotate(glm::vec3 axis, float deg) { //
     glm::mat4 rotation = glm::mat4(1.0f);
     rotation = glm::rotate(rotation, glm::radians(deg), axis);
     // dir = glm::normalize(rotation * glm::vec4(dir, 1.0f));
@@ -17,9 +17,9 @@ void Camera2::rotate(glm::vec3 axis, float deg) { //
     // up = glm::normalize(rotation * glm::vec4(up, 1.0f));
 };
 
-glm::mat4 Camera2::getView() { return glm::lookAt(this->loc, this->loc + this->dir, this->up); }
+glm::mat4 Camera::getView() { return glm::lookAt(this->loc, this->loc + this->dir, this->up); }
 
-void Camera2::updateScroll(GLFWwindow* window, double delx, double dely) {
+void Camera::updateScroll(GLFWwindow* window, double delx, double dely) {
     this->fov += dely;
     if (this->fov > 80)
         this->fov = 80;
@@ -27,7 +27,7 @@ void Camera2::updateScroll(GLFWwindow* window, double delx, double dely) {
         this->fov = 1;
 }
 
-int Camera2::pollInput(GLFWwindow* window) {
+int Camera::pollInput(GLFWwindow* window) {
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);

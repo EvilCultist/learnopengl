@@ -24,7 +24,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <renderer.h>
 #include <utils.h>
-#include <camera2.h>
+/*#include <camera2.h>*/
 
 /*#define WINDOW_HEIGHT 1200*/
 #define WINDOW_HEIGHT 800
