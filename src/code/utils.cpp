@@ -30,7 +30,7 @@ void utils::glfwHints() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
     glfwWindowHint(GLFW_SCALE_FRAMEBUFFER, GLFW_FALSE);
-    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+    /*glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);*/
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     /*glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);*/
@@ -88,7 +88,7 @@ int checkIfShaderDidOk(GLuint shader) {
         char buffer[512];
         glGetShaderInfoLog(shader, 512, NULL, buffer);
         std::cout << buffer << std::endl;
-        std::cerr << "vertex shader failed to compile" << std::endl;
+        std::cerr << "shader failed to compile" << std::endl;
         return -1;
     }
     return 0;

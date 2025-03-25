@@ -68,19 +68,20 @@ int Renderer::makeShader(std::string name) {
         utils::makeShader("src/shaders/" + name + ".vert", GL_VERTEX_SHADER);
     auto fragmentShader =
         utils::makeShader("src/shaders/" + name + ".frag", GL_FRAGMENT_SHADER);
-    auto shader = glCreateProgram();
-    glAttachShader(shader, vertexShader);
-    glAttachShader(shader, fragmentShader);
-    this->shaderProgram.push_back(shader);
-    return this->shaderProgram.size() - 1;
+    this->shaderProgram = glCreateProgram();
+    glAttachShader(this->shaderProgram, vertexShader);
+    glAttachShader(this->shaderProgram, fragmentShader);
+    /*this->shaderProgram.push_back(shader);*/
+    return this->shaderProgram;
+    /*return this->shaderProgram.size() - 1;*/
 }
-int Renderer::bindShaders(int choice) {
+int Renderer::bindShaders() {
 
-    glBindFragDataLocation(this->shaderProgram[choice], 0, "fragColor");
-    glLinkProgram(this->shaderProgram[choice]);
-    glUseProgram(this->shaderProgram[choice]);
+    glBindFragDataLocation(this->shaderProgram, 0, "fragColor");
+    glLinkProgram(this->shaderProgram);
+    glUseProgram(this->shaderProgram);
 
-    GLint posAttrib = glGetAttribLocation(this->shaderProgram[choice], "pos");
+    GLint posAttrib = glGetAttribLocation(this->shaderProgram, "pos");
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
                           0);
@@ -89,6 +90,7 @@ int Renderer::bindShaders(int choice) {
 }
 void Renderer::render() {
     // glDrawArrays(GL_TRIANGLES, indicies, count);
+    // light.render();
     // std::cout << count << '\t' << indicies << std::endl;
 
     // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT,
@@ -105,8 +107,9 @@ void Renderer::render() {
     // this->elements + indicies);
 }
 Renderer::~Renderer() {
-    for (auto val : this->shaderProgram)
-        glDeleteProgram(val);
+    /*for (auto val : this->shaderProgram)*/
+    /*    glDeleteProgram(val);*/
+    glDeleteProgram(this->shaderProgram);
     glDeleteBuffers(1, &this->vbo);
     glDeleteVertexArrays(1, &this->vao);
     this->debug();

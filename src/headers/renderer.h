@@ -20,12 +20,12 @@ class Renderer {
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
-    // GLuint shaderProgram;
-    std::vector<GLuint> shaderProgram;
+    GLuint shaderProgram;
+    /*std::vector<GLuint> shaderProgram;*/
     Renderer();
     void debug();
     int makeShader(std::string name);
-    int bindShaders(int choice);
+    int bindShaders();
     void render();
     ~Renderer();
 };
