@@ -1,29 +1,30 @@
 #pragma once
 #include <GL/glew.h>
 #include <cstddef>
-// #include <vector>
+#include <vector>
 
 class Renderer {
-  private:
-    GLfloat* vertices;
-    GLuint* elements;
-    GLuint numVertices;
-    // std::vector<GLfloat>
-    void setPoints();
-    void setElements();
-    int addPoint(GLfloat arr[8]);
-    void addRenderElements(size_t len);
+private:
+  GLfloat *vertices;
+  GLuint *elements;
+  GLuint numVertices;
+  std::vector<GLint> attribs;
+  // std::vector<GLfloat>
+  void setPoints();
+  void setElements();
+  int addPoint(GLfloat arr[8]);
+  void addRenderElements(size_t len);
 
-  public:
-    GLuint vao;
-    GLuint vbo;
-    GLuint ebo;
-    GLuint shaderProgram;
-    Renderer();
-    void debug();
-    int bindShaders(GLint vertex, GLint fragment);
-    void render();
-    ~Renderer();
+public:
+  GLuint vao;
+  GLuint vbo;
+  GLuint ebo;
+  GLuint shaderProgram;
+  Renderer();
+  void debug();
+  int bindShaders(GLint vertex, GLint fragment);
+  void render();
+  ~Renderer();
 };
 
 // GLuint ebo;

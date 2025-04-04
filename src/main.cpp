@@ -30,6 +30,12 @@
 #define WINDOW_WIDTH 1200
 #define N_BOXES 8
 
+#define setAmbient(x)                                                          \
+  glUniform3fv(glGetUniformLocation(rdr->shaderProgram, "ambientLight"), 1,    \
+               glm::value_ptr(x));                                             \
+  glUniform3fv(glGetUniformLocation(light->shaderProgram, "ambientLight"), 1,  \
+               glm::value_ptr(x));
+
 int main() {
   auto t_start = std::chrono::system_clock::now();
   if (!glfwInit())
@@ -62,6 +68,7 @@ int main() {
   rdr->bindShaders(vertexShader, fragmentShader);
 
   GLint uniBase = glGetUniformLocation(rdr->shaderProgram, "baseColor");
+  GLint uniLightPos = glGetUniformLocation(rdr->shaderProgram, "lightPos");
   GLint uniModel = glGetUniformLocation(rdr->shaderProgram, "model");
   GLint uniView = glGetUniformLocation(rdr->shaderProgram, "view");
   GLint uniProj = glGetUniformLocation(rdr->shaderProgram, "proj");
@@ -155,8 +162,11 @@ int main() {
     glUseProgram(rdr->shaderProgram);
 
     glUniform3fv(uniBase, 1, glm::value_ptr(baseColor));
+    // glUniform3fv(uniLightPos, 1, glm::value_ptr(baseColor));
+    glUniform3f(uniLightPos, model[0][3], model[1][3], model[2][3]);
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view.getView()));
 
+    time = 0;
     for (int i = 0; i < N_BOXES; i++) {
       model = glm::mat4(1.0f);
       model = glm::translate(model, spawn_locations[i]);
