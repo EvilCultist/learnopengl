@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include <cstddef>
 #include <cstdlib>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 #define n_elems 12 * 3
@@ -9,7 +10,7 @@
 Renderer::Renderer() {
 
   //                           n * n_pts
-  this->vertices = (GLfloat *)calloc((8 * 3) + (n_elems), sizeof(GLfloat));
+  this->vertices = (GLfloat *)calloc((8 * 3) + (n_elems * 3), sizeof(GLfloat));
   int s = 0;
   for (GLfloat i = -0.5f; i <= 0.5f; i++) {
     for (GLfloat j = -0.5f; j <= 0.5f; j++) {
@@ -106,7 +107,7 @@ int Renderer::bindShaders(GLint vertex, GLint fragment) {
   glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
                         0);
   glVertexAttribPointer(normalAttrib, 3, GL_FLOAT, GL_FALSE,
-                        3 * sizeof(GLfloat), (void *)(this->numVertices * 3));
+                        3 * sizeof(GLfloat), (void *)(3 * this->numVertices));
 
   for (auto val : this->attribs) {
     glDisableVertexAttribArray(val);
@@ -130,7 +131,19 @@ void Renderer::render() {
     glEnableVertexAttribArray(val);
   }
 
-  glDrawElements(GL_TRIANGLES, n_elems * 3, GL_UNSIGNED_INT, 0);
+  for (int i = 0; i < (n_elems); i += 3) {
+    glUniform3fv(glGetUniformLocation(this->shaderProgram, "aNormal"), 1,
+                 this->vertices + 8 * 3 + (i));
+    // std::cout << 8 * 3 + (i) << " : " << this->vertices[8 * 3 + (i)]
+    //           << this->vertices[8 * 3 + (i) + 1]
+    //           << this->vertices[8 * 3 + (i) + 2] << std::endl;
+    // std::cout << i << " : " << this->elements[i] << " " << this->elements[i +
+    // 1]
+    //           << " " << this->elements[i + 2] << std::endl;
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *)(i));
+  }
+
+  // glDrawElements(GL_TRIANGLES, n_elems * 3, GL_UNSIGNED_INT, 0);
 
   for (auto val : this->attribs) {
     glDisableVertexAttribArray(val);

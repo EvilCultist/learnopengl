@@ -10,11 +10,16 @@ uniform vec3 lightPos;
 out vec4 fragColor;
 
 void main() {
+    // vec3 normal = vec3(1.0, 0, 0);
     vec3 ambient = ambientLight * 0.1;
+
     vec3 norm = normalize(normal);
+
     vec3 lightDir = normalize(lightPos - pos);
+
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * ambientLight;
+
     vec3 result = (ambient + diffuse) * baseColor;
     fragColor = vec4(result, 1.0);
 }

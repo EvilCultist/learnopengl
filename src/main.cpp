@@ -70,6 +70,7 @@ int main() {
   GLint uniBase = glGetUniformLocation(rdr->shaderProgram, "baseColor");
   GLint uniLightPos = glGetUniformLocation(rdr->shaderProgram, "lightPos");
   GLint uniModel = glGetUniformLocation(rdr->shaderProgram, "model");
+  GLint uniRot = glGetUniformLocation(rdr->shaderProgram, "rotation");
   GLint uniView = glGetUniformLocation(rdr->shaderProgram, "view");
   GLint uniProj = glGetUniformLocation(rdr->shaderProgram, "proj");
 
@@ -166,23 +167,25 @@ int main() {
     glUniform3f(uniLightPos, model[0][3], model[1][3], model[2][3]);
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view.getView()));
 
-    time = 0;
+    float temp = time;
+    time = 1;
     for (int i = 0; i < N_BOXES; i++) {
       model = glm::mat4(1.0f);
       model = glm::translate(model, spawn_locations[i]);
       // model = glm::translate(model, glm::vec3(2.0f));
-      model =
-          glm::rotate(model,                       // model,
-                      glm::radians(360.0f) * time, // * glm::radians(0.1f), //
-                      glm::vec3(0.0f, 0.0f, 1.0f));
-      model =
-          glm::rotate(model, glm::radians(spawn_angles[i]), spawn_locations[i]);
+      glm::mat4 rot = glm::mat4(1.0);
+      rot = glm::rotate(rot,                         // model,
+                        glm::radians(360.0f) * time, // * glm::radians(0.1f), //
+                        glm::vec3(0.0f, 0.0f, 1.0f));
+      rot = glm::rotate(rot, glm::radians(spawn_angles[i]), spawn_locations[i]);
       glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+      glUniformMatrix4fv(uniRot, 1, GL_FALSE, glm::value_ptr(rot));
       // std::cout << time << std::endl;
 
       // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
       rdr->render();
     }
+    time = temp;
 
     glDisable(GL_STENCIL_TEST);
 
