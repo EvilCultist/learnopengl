@@ -131,7 +131,7 @@ void Renderer::render() {
     glEnableVertexAttribArray(val);
   }
 
-  for (int i = 0; i < (n_elems); i += 3) {
+  for (int i = 0; i < (n_elems + 1); i += 3) {
     glUniform3fv(glGetUniformLocation(this->shaderProgram, "aNormal"), 1,
                  this->vertices + 8 * 3 + (i));
     // std::cout << 8 * 3 + (i) << " : " << this->vertices[8 * 3 + (i)]
@@ -140,7 +140,7 @@ void Renderer::render() {
     // std::cout << i << " : " << this->elements[i] << " " << this->elements[i +
     // 1]
     //           << " " << this->elements[i + 2] << std::endl;
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *)(i));
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void *)(i));
   }
 
   // glDrawElements(GL_TRIANGLES, n_elems * 3, GL_UNSIGNED_INT, 0);
