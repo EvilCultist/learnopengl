@@ -140,7 +140,7 @@ void Renderer::render() {
     // std::cout << i << " : " << this->elements[i] << " " << this->elements[i +
     // 1]
     //           << " " << this->elements[i + 2] << std::endl;
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void *)(i));
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *)(i));
   }
 
   // glDrawElements(GL_TRIANGLES, n_elems * 3, GL_UNSIGNED_INT, 0);
