@@ -2,18 +2,19 @@
 #define CAMERA_H
 
 #include <GL/gl.h>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 // Defines several possible options for camera movement. Used as abstraction to
 // stay away from window-system specific input methods
-enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT };
+enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
 // Default camera values
-const float YAW = -90.0f;
+const float YAW = -45.0f;
 const float PITCH = 0.0f;
-const float SPEED = 2.5f;
-const float SENSITIVITY = 0.1f;
+const float SPEED = 10.0f;
+const float SENSITIVITY = 0.2f;
 const float ZOOM = 45.0f;
 
 // An abstract camera class that processes input and calculates the
@@ -76,6 +77,10 @@ public:
       Position -= Right * velocity;
     if (direction == RIGHT)
       Position += Right * velocity;
+    if (direction == DOWN)
+      Position -= WorldUp * velocity;
+    if (direction == UP)
+      Position += WorldUp * velocity;
   }
 
   // processes input received from a mouse input system. Expects the offset
@@ -85,6 +90,7 @@ public:
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
 
+    // pitch and yaw are mislabelled
     Yaw += xoffset;
     Pitch += yoffset;
 

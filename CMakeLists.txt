@@ -17,7 +17,7 @@ target_sources(opengltut
     src/main.cpp
     src/code/utils.cpp
     src/code/renderer.cpp
-    src/code/camera.cpp
+    # src/code/camera.cpp
 )
 
 target_include_directories(opengltut

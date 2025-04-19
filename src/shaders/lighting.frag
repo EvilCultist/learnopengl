@@ -11,7 +11,7 @@ out vec4 fragColor;
 
 void main() {
     // vec3 normal = vec3(1.0, 0, 0);
-    vec3 ambient = ambientLight * 0.1;
+    vec3 ambient = ambientLight * 0.2;
 
     vec3 norm = normalize(normal);
 
@@ -21,5 +21,6 @@ void main() {
     vec3 diffuse = diff * ambientLight;
 
     vec3 result = (ambient + diffuse) * baseColor;
+    // vec3 result = ambient * baseColor;
     fragColor = vec4(result, 1.0);
 }
