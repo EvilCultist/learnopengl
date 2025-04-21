@@ -2,7 +2,11 @@
 #define CAMERA_H
 
 #include <GL/gl.h>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/quaternion_geometric.hpp>
+#include <glm/ext/quaternion_transform.hpp>
 #include <glm/ext/vector_float3.hpp>
+#include <glm/ext/vector_float4.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -90,9 +94,21 @@ public:
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
 
+    glm::vec4 fwd = glm::vec4(Front, 0.0);
+    glm::mat4 rot(1.0);
+    rot = glm::rotate(rot, xoffset, Up);
+    rot = glm::rotate(rot, yoffset, Right);
+    fwd = rot * fwd;
+
+    // auto yawinc =
+    //     glm::dot(glm::vec3(1.0f, 0.0f, 0.0f), glm::rotate(fwd, xoffset, Up));
+    // auto pitchinc = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), yoffset * Front);
+
     // pitch and yaw are mislabelled
     Yaw += xoffset;
+    // Yaw += yawinc;
     Pitch += yoffset;
+    // Pitch += pitchinc;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch) {
