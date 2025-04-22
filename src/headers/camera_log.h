@@ -2,13 +2,20 @@
 #define CAMERA_H
 
 #include <GL/gl.h>
+#include <cmath>
+#include <glm/common.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_geometric.hpp>
 #include <glm/ext/quaternion_transform.hpp>
+#include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
+#include <glm/geometric.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/trigonometric.hpp>
+#include <iostream>
+#include <iterator>
 
 // Defines several possible options for camera movement. Used as abstraction to
 // stay away from window-system specific input methods
@@ -18,7 +25,7 @@ enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 const float YAW = -45.0f;
 const float PITCH = 0.0f;
 const float SPEED = 10.0f;
-const float SENSITIVITY = 0.2f;
+const float SENSITIVITY = 0.02f;
 const float ZOOM = 45.0f;
 
 // An abstract camera class that processes input and calculates the
@@ -94,21 +101,9 @@ public:
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
 
-    glm::vec4 fwd = glm::vec4(Front, 0.0);
-    glm::mat4 rot(1.0);
-    rot = glm::rotate(rot, xoffset, Up);
-    rot = glm::rotate(rot, yoffset, Right);
-    fwd = rot * fwd;
-
-    // auto yawinc =
-    //     glm::dot(glm::vec3(1.0f, 0.0f, 0.0f), glm::rotate(fwd, xoffset, Up));
-    // auto pitchinc = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), yoffset * Front);
-
     // pitch and yaw are mislabelled
     Yaw += xoffset;
-    // Yaw += yawinc;
     Pitch += yoffset;
-    // Pitch += pitchinc;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch) {

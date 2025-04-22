@@ -228,6 +228,7 @@ int main() {
 
     subjectShader.use();
     subjectShader.setVec3("lightPos", 0.0f, 0.0f, 0.0f);
+    subjectShader.setVec3("viewPos", camera.Position);
     subjectShader.setVec3("ambientLight", ambientColor);
     subjectShader.setVec3("baseColor", baseColor);
     subjectShader.setMat4("view", view);
