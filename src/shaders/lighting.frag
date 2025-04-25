@@ -2,10 +2,10 @@
 
 in vec3 pos;
 in vec3 normal;
+in vec3 lightLoc;
 
 uniform vec3 ambientLight;
 uniform vec3 baseColor;
-uniform vec3 lightPos;
 uniform vec3 viewPos;
 
 float spec_str = 0.8;
@@ -18,7 +18,7 @@ void main() {
 
     vec3 norm = normalize(normal);
 
-    vec3 lightDir = normalize(lightPos - pos);
+    vec3 lightDir = normalize(lightLoc - pos);
     vec3 viewDir = normalize(viewPos - pos);
     vec3 reflDir = reflect(-lightDir, normal);
 

@@ -219,6 +219,9 @@ int main() {
                                  1.0f,                                  //
                                  200.0f);
     glm::mat4 view = camera.GetViewMatrix();
+    glm::vec3 lightLocation =
+        (float)sin(time * 3.1415 * 2) * glm::vec3(0.0f, 0.0f, 8.0f);
+    model = glm::translate(model, lightLocation);
     lightShader.setMat4("model", model);
     lightShader.setMat4("view", view);
     lightShader.setMat4("proj", proj);
@@ -227,7 +230,7 @@ int main() {
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     subjectShader.use();
-    subjectShader.setVec3("lightPos", 0.0f, 0.0f, 0.0f);
+    subjectShader.setVec3("lightPos", lightLocation);
     subjectShader.setVec3("viewPos", camera.Position);
     subjectShader.setVec3("ambientLight", ambientColor);
     subjectShader.setVec3("baseColor", baseColor);
@@ -239,7 +242,9 @@ int main() {
       model = glm::translate(model, spawn_locations[i]);
       subjectShader.setMat4("model", model);
       glm::mat4 rot = glm::mat4(1.0);
-      rot = glm::rotate(rot, glm::radians(spawn_angles[i]), spawn_locations[i]);
+      // std::cout << time << std::endl;
+      rot = glm::rotate(rot, glm::radians(spawn_angles[i] + 360 * time),
+                        spawn_locations[i]);
       subjectShader.setMat4("rotation", rot);
 
       glBindVertexArray(subject_vao);
