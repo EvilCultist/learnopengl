@@ -173,6 +173,7 @@ int main() {
         glm::vec3(((rand() % 42) / 2.0f) - 10.5f,
                   ((rand() % 42) / 2.0f) - 10.5f, ((rand() % 8) / 2.0f) - 2.0f);
   }
+  spawn_locations[N_BOXES - 1] = glm::vec3(32.0f, 0.0f, 0.0f);
   float spawn_angles[N_BOXES];
   for (int i = 0; i < N_BOXES; i++) {
     spawn_angles[i] = rand() % 180;
