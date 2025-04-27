@@ -27,6 +27,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <materials.h>
 #include <renderer.h>
 #include <utils.h>
 
@@ -179,6 +180,8 @@ int main() {
     spawn_angles[i] = rand() % 180;
   }
 
+  auto materials = new Materials();
+
   double prevx = 0, prevy = 0;
   glfwGetCursorPos(window, &prevx, &prevy);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -233,8 +236,6 @@ int main() {
     subjectShader.use();
     subjectShader.setVec3("lightPos", lightLocation);
     subjectShader.setVec3("viewPos", camera.Position);
-    subjectShader.setVec3("ambientLight", ambientColor);
-    subjectShader.setVec3("baseColor", baseColor);
     subjectShader.setMat4("view", view);
     subjectShader.setMat4("proj", proj);
 
@@ -247,6 +248,11 @@ int main() {
       rot = glm::rotate(rot, glm::radians(spawn_angles[i] + 360 * time),
                         spawn_locations[i]);
       subjectShader.setMat4("rotation", rot);
+      subjectShader.setVec3("material.ambient", materials[i].mats->ambient);
+      subjectShader.setVec3("material.diffuse", materials[i].mats->diffuse);
+      subjectShader.setVec3("material.specular", materials[i].mats->specular);
+      subjectShader.setFloat("material.shininess",
+                             materials[i].mats->shininess);
 
       glBindVertexArray(subject_vao);
       glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -275,6 +281,7 @@ int main() {
   // utils::removeImage(image);
 
   // std::this_thread::sleep_for(std::chrono::seconds(10));
+  delete materials;
 
   glDeleteVertexArrays(1, &light_vao);
   glDeleteVertexArrays(1, &subject_vao);
