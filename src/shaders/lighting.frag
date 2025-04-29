@@ -29,7 +29,7 @@ void main() {
 
     vec3 reflDir = reflect(-lightDir, norm);
 
-    float spec = pow(max(dot(viewDir, reflDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflDir), 0.0), 128 * material.shininess);
     vec3 specular = spec * spec_str * material.specular;
 
     // if (dot(viewDir, reflDir) > 0.0) {

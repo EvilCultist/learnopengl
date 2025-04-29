@@ -174,7 +174,8 @@ int main() {
         glm::vec3(((rand() % 42) / 2.0f) - 10.5f,
                   ((rand() % 42) / 2.0f) - 10.5f, ((rand() % 8) / 2.0f) - 2.0f);
   }
-  spawn_locations[N_BOXES - 1] = glm::vec3(32.0f, 0.0f, 0.0f);
+  // spawn_locations[N_BOXES - 1] = glm::vec3(32.0f, 0.0f, 0.0f);
+
   float spawn_angles[N_BOXES];
   for (int i = 0; i < N_BOXES; i++) {
     spawn_angles[i] = rand() % 180;
@@ -248,16 +249,22 @@ int main() {
       rot = glm::rotate(rot, glm::radians(spawn_angles[i] + 360 * time),
                         spawn_locations[i]);
       subjectShader.setMat4("rotation", rot);
-      subjectShader.setVec3("material.ambient", materials[i].mats->ambient);
-      subjectShader.setVec3("material.diffuse", materials[i].mats->diffuse);
-      subjectShader.setVec3("material.specular", materials[i].mats->specular);
+      // std::cout << materials->mats[i].shininess << " ";
+      int matIndex = i * 2;
+      subjectShader.setVec3("material.ambient",
+                            materials->mats[matIndex].ambient);
+      subjectShader.setVec3("material.diffuse",
+                            materials->mats[matIndex].diffuse);
+      subjectShader.setVec3("material.specular",
+                            materials->mats[matIndex].specular);
       subjectShader.setFloat("material.shininess",
-                             materials[i].mats->shininess);
+                             materials->mats[matIndex].shininess);
 
       glBindVertexArray(subject_vao);
       glDrawArrays(GL_TRIANGLES, 0, 36);
       // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     }
+    // std::cout << std::endl;
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
