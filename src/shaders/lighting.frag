@@ -10,6 +10,12 @@ struct Material {
     float shininess;
 };
 
+// struct Material {
+//     vec3 specular;
+//     sampler2D diffuse;
+//     float shininess;
+// };
+
 uniform Material material;
 
 in vec3 pos;
